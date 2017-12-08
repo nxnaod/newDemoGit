@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>订单认领</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link href="../../css/bootstrap.css" rel="stylesheet" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        body { }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12 text-left">
+                <h5 style="color:#808080">订单认领与自动订单匹配存在延迟，提交订单后30分钟内可在“我的订单”页面看到记录。”</h5>
+            </div>
+            <div class="col-xs-12" style="margin-top:10px">
+                <div class="form-inline">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="order" placeholder="请输入淘宝订单号或淘宝账号" style="height:40px">
+                            <div class="input-group-addon" style="color:#ffffff;background-color:#ff0000;border: 1px solid #ff0000;" onclick="AddOrder()" tapmode="cb">确认</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/config.js"></script>
+<script type="text/javascript">
+    apiready = function () {
+
+    };
+    function AddOrder() {
+        var ordernum = $api.val($api.dom("#order"));
+        if (ordernum != "" && ordernum != undefined && ordernum != 'undefined') {
+            api.showProgress({
+                style: 'default',
+                animationType: 'fade',
+                title: '数据加载中...',
+                modal: true
+            });
+            api.ajax({
+                url: GetDataUrl() + '/appwsw/index.php?mod=user&act=tbnick&sub=add&value=' + ordernum,
+                method: 'get',
+            }, function (ret, err) {
+                if (ret) {
+                    if (ret.s == 1) {
+                        $api.val($api.dom("#order"), "");
+                        api.toast({
+                            msg: '添加成功，请耐心等待',
+                            duration: 2000,
+                            location: 'middle'
+                        });
+                    } else {
+                        api.toast({
+                            msg:ret.r,
+                            duration: 2000,
+                            location: 'middle'
+                        });
+                    }
+                };
+                api.hideProgress();
+            })
+        } else {
+            api.toast({
+                msg: '请输入订单号或淘宝账号',
+                duration: 2000,
+                location: 'middle'
+            });
+        };
+    };
+</script>
+</html>

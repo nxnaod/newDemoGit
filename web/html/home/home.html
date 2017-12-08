@@ -1,0 +1,255 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>首页</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.css" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        body { background-color: #ff0000; }
+        .top { height: 50px; display: block; width: 100%; background: url('../../image/home/top_bg.png') no-repeat; background-position: center; background-size: cover; color: #ffffff; }
+        .top p { margin-bottom: 0; font-size: 10px; }
+        .top-share, .top-news { position: absolute; height: 50px; padding-top: 7.5px; width: 45px; text-align: center; z-index: 999; }
+        .top-news { right: 0; }
+        .top-share img, .top-news img { height: 20px; }
+        .top-search { height: 50px; padding-left: 55px; padding-right: 55px; }
+        .input-serch { background: rgba(255, 255, 255,0.2); display: block; height: 36px; width: 100%; border-radius: 5px; margin-top: 7px; padding: 7px 10px; font-size: 16px; }
+        .input-serch img { height: 20px; }
+
+        .home-menu { height: 41px; display: block; width: 100%; border-bottom: 1px solid #E3E3E3; background: #F9F9F9; }
+
+        .fenlei { display: block; height: 40px; width: 40px; position: absolute; right: 0; text-align: center; font-size: 10px; background: #F9F9F9; }
+        .fenlei img { width: 60%; margin-top: 8px; }
+
+        .spot { display: block; height: 8px; width: 8px; position: absolute; background: #ffffff; border-radius: 50%; left: 28px; }
+
+        .cb { opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="top-share" tapmode="cb" onclick="ShareF()">
+                    <img src="../../image/home/share.png" />
+                    <p>分享</p>
+                </div>
+                <div class="col-xs-12 top-search" tapmode="cb" onclick="OpenSearch()">
+                    <div class="input-serch">
+                        <img src="../../image/home/search_bt.png" />&nbsp;&nbsp;搜淘宝宝贝 &nbsp;&nbsp;&nbsp;拿返利
+                    </div>
+                </div>
+                <div class="top-news" tapmode="cb" onclick="OpenMail()">
+                    <span class="spot"></span>
+                    <img src="../../image/home/news.png" />
+                    <p>消息</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="home-menu">
+        <div class="fenlei" tapmode="cb" onclick="OpenAiTaoBaoType()">
+            <img src="../../image/home/icon_fenlei.png" />
+        </div>
+    </div>
+</body>
+<script src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/config.js"></script>
+<script src="../../script/wsw.js"></script>
+<script type="text/javascript">
+
+    var hoemnav;
+    var navitems = 11;//分类个数
+    var hoemnavItem = [];
+    var homenavID = {};
+    var menuitem = 0;
+
+    apiready = function () {
+
+        NoMail();
+        //初始化菜单
+        InitialMenu();
+
+        //GetLog(api.frameName, api.winName);//输出日志
+    };
+
+    //初始化菜单
+    function InitialMenu() {
+        hoemnav = api.require('NVNavigationBar');
+        api.ajax({
+            url: ApiUrl.GetGoodsType,
+            method: 'get',
+            dataType: 'json',
+            cache: true,
+        }, function (ret, err) {
+            if (ret) {
+                if (ret.s == 1) {
+                    homenavID[0] = 0;
+                    hoemnavItem.push({
+                        title: "精选",
+                        bg: "widget://image/menubg1.png",
+                        bgSelected: "widget://image/menubg.png",
+                    });
+                    var goods_type = ret.r.goods_type;
+                    navitems = ret.r.goods_type.length + 1;
+
+                    for (var i in goods_type) {
+                        hoemnavItem.push({
+                            title: goods_type[i].title,
+                            bg: "widget://image/menubg1.png",
+                            bgSelected: "widget://image/menubg.png",
+                        });
+                        var n = parseInt(i) + 1;
+                        homenavID[n] = goods_type[i].id;
+                    }
+                    OpenNav(hoemnavItem);
+                }
+
+            } else {
+            }
+        });
+    }
+
+    function OpenNav(_item) {
+        hoemnav.open({
+            rect: {
+                x: 0,
+                y: 50,
+                w: api.frameWidth - 40,
+                h: 40
+            },
+            styles: {
+                orientation: 'horizontal',
+                bg: "widget://image/menubg1.png",
+                bgAlpha: 1,
+                font: {
+                    size: 14,
+                    sizeSelected: 14,
+                    color: '#333333',
+                    colorSelected: '#FF3444',
+                    alpha: 1,
+                },
+                itemSize: {
+                    w: 72,
+                    h: 40
+                }
+            },
+            items: _item,
+            selectedIndex: 0,
+            fixedOn: api.frameName,
+            id: 'first'
+        }, function (ret, err) {
+            if (ret) {
+                var n = ret.index;
+                if (n == 0 || n == undefined || n == "undefined") {
+                    n = 0;
+                    menuitem = n;
+                    OpenFrame("jingxuan", "../../html/product/jingxuan.html", { "menuindex": n, "cid": homenavID[n] });
+                } else {
+                    menuitem = n;
+                    OpenFrame("product_list"+n, "../../html/product/product_list.html", { "menuindex": n, "cid": homenavID[n] });
+                }
+            } else {
+                alert("请检查您的网络，重启应用");
+            }
+        });
+    };
+    //首页菜单切换
+    function TypeMenuChange(index) {
+        if (navitems > index && index >= 0) {
+            hoemnav.setSelected({
+                id: 'first',
+                index: index,
+                selected: true
+            }, function (ret) {
+                if (ret.status) {
+                    if (index == 0 || index == undefined || index == "undefined") {
+                        menuitem = index;
+                        OpenFrame("jingxuan", "../../html/product/jingxuan.html", { "menuindex": index, "cid": homenavID[index] });
+                    } else {
+                        menuitem = index;
+                        OpenFrame("product_list"+index, "../../html/product/product_list.html", { "menuindex": index, "cid": homenavID[index] });
+                    }
+                };
+            });
+        }
+    };
+
+
+    //初始化界面
+    function MenuInitialize() {
+        if (menuitem == 0 || menuitem == undefined || menuitem == "undefined") {
+            menuitem = 0;
+            OpenFrame("jingxuan", "../../html/product/jingxuan.html", { "menuindex": menuitem });
+        } else {
+            OpenFrame("product_list" + menuitem, "../../html/product/product_list.html", { "menuindex": menuitem });
+        }
+    }
+
+    //打开窗口
+    function OpenFrame(frameName, frameUrl, frameParam) {
+        api.openFrame({
+            name: frameName,
+            url: frameUrl,
+            bounces: true,
+            bgColor: "#DFDEDE",
+            rect: {
+                x: 0,
+                y: 91,
+                w: 'auto',
+                h: api.frameHeight - 91
+            },
+            pageParam: frameParam,
+        });
+    };
+
+
+    //收入明细
+    function OpenMail() {
+        var tf = localStorage.getItem("LoginState");
+        if (tf) {
+            OpenFramWin("user_mail", "../../html/user/user_mail.html", "站内信", {}, "../../html/frame/frame3.html");
+        } else {
+            UserLogIn("", "OpenMail()", api.winName, api.frameName);
+        }
+    };
+
+    //打开爱淘宝
+    function OpenAiTaoBaoType() {
+        OpenFramWin("aitaobao_type", "../../html/product/aitaobao_type.html", "分类", {}, "../../html/frame/frame.html");
+    }
+
+    //打开搜索
+    function OpenSearch() {
+        OpenWin("product_search", "../../html/product/search_product.html");
+    }
+
+    //站内信
+    function NoMail() {
+        if (localStorage.getItem("LoginState")) {
+            api.ajax({
+                url: GetDataUrl() + "/appwsw/index.php?mod=user&act=msg&do=noreadcount",
+                method: 'get',
+            }, function (ret, err) {
+                if (ret.s == 1) {
+                    if (ret.r == 0) {
+                        $('.spot').remove();
+                    }
+                };
+            });
+        };
+    };
+
+    function ShareF() {
+        var title = localStorage.getItem("appwsw_fxtitle");
+        var description = localStorage.getItem("appwsw_fxms");
+        var img = localStorage.getItem("appwsw_fxtplink");
+        var rec_url =GetDataUrl()+"/"+localStorage.getItem("fxurl");
+        Share(title, description, img, rec_url);
+    }
+</script>
+</html>

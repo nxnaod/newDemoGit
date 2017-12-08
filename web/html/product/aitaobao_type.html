@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>爱淘宝分类</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link href="../../css/bootstrap.css" rel="stylesheet" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        html, body { background: #ffffff; }
+        .search { display: block; width: 100%; height: 30px; line-height: 30px; background: #ECECEC; color: #9A9A9A; margin-top: 10px; border-radius: 5px; padding: 0 10px; }
+        .prl0 { padding-left: 0; padding-right: 0; }
+        .menu-list1 { width: 90px; display: block; float: left; background-color: #fff; height: 500px; }
+        .menu-list1 ul li { height: 50px; line-height: 50px; text-align: center; background: #F9F9F9; color: #000000; font-size: 16px; border-bottom: 1px solid #ffffff; }
+        .menu-list1 ul li.active { background: #fff; }
+        .menu-list2 { display: block; float: left; background-color: #fff; height: 500px; width: 230px; }
+        .menu-content { display: none; width: 100%; height: 100%; }
+        .menu-content.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12" onclick="OpenSearch()" tapmode="cb">
+                <span class="search">
+                    <img src="../../image/product/serch.png" style="height:14px;width:auto" />  搜淘宝宝贝&nbsp;拿返利
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid" style="margin-top:10px">
+        <div class="row">
+            <div class="col-xs-12 prl0">
+                <div class="menu-list1">
+                    <ul class="list-unstyled">
+                        <!--<li class="active" onclick="OpenMenuList(0)" data-id="" tapmode="cb">
+                            女装
+                        </li>-->
+                    </ul>
+                </div>
+                <div class="menu-list2">
+                    <div class="menu-content conten-1">
+                        <ul class="list-inline"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/doT.min.js"></script>
+<script type="text/javascript" src="../../script/config.js"></script>
+<script type="text/javascript" src="../../script/wsw.js"></script>
+<script type="text/x-dot-template" id="menulist1">
+    {{ for(var i=0;i<it.length;i++){ }}
+    <li onclick="OpenMenuList('{{=it[i].index}}')" data-url="{{=it[i].itemslink}}" tapmode="cb">
+        {{=it[i].displaytitle}}
+    </li>
+    {{ } }}
+</script>
+<script type="text/javascript">
+
+    var rlw;
+    var rlh;
+    var menuUrl = new Array();
+    apiready = function () {
+        rlw = api.winWidth - 90;
+        rlh = api.winHeight - 111;
+        rlw = 'width:' + rlw + 'px;height:' + rlh + 'px;';
+        $api.css($api.dom('.menu-list1'), 'height:' + rlh + 'px');
+        GetMenuList();
+    };
+
+    function GetMenuList() {
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '数据加载中...',
+            modal: true
+        });
+        api.ajax({
+            url: ApiUrl.GetAiTaoBaoType,
+            method: 'get',
+        }, function (ret, err) {
+            if (ret) {
+                if (ret.s == 1) {
+                    var menulist1 = doT.template($api.text($api.dom("#menulist1")));
+                    menulist = menulist1(ret.r);
+                    $api.html($api.dom('.menu-list1 ul'), menulist);
+                    for (var m = 0; m < ret.r.length; m++) {
+                        menuUrl[m] = ret.r[m].itemslink;
+                    };
+                    OpenMenuList(0);
+                }
+            }
+            api.hideProgress();
+        });
+    }
+
+    function OpenMenuList(index) {
+        var _this = $('.menu-list1 li').eq(index);
+        if (_this.hasClass('active')) return;
+        $('.menu-list1 li').removeClass('active');
+        _this.addClass('active');
+        api.openFrame({
+            name: 'menucontent' + index,
+            url: '../../html/product/aitaobao_type2.html',
+            rect: {
+                marginLeft: 90,    //相对父window左外边距的距离
+                marginTop: 111,    //相对父window上外边距的距离
+                marginBottom: 0,    //相对父window下外边距的距离
+                marginRight: 0    //相对父window右外边距的距离
+            },
+            reload: false,
+            bounces:false,
+            pageParam: { "itemslink": menuUrl[index] }
+        });
+    };
+
+    //打开搜索
+    function OpenSearch() {
+        OpenWin("product_search", "../../html/product/search_product.html");
+    }
+</script>
+</html>

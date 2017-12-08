@@ -1,0 +1,162 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>注册-验证码</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/bootstrap.css" />
+    <link rel="stylesheet" href="../../css/font.css" />
+    <style>
+        html, body { background-color: #F0F0F0; }
+        .register-menu { height: 45px; line-height: 45px; color: #000000; background-color: #ffffff; font-size: 12px; }
+        .register-menu .active { color: #FF3444; }
+        .register-menu li { padding-left: 0px; padding-right: 5px; }
+        .register-menu img { height: 10px; }
+        .register-input { width: 100%; height: 45px; line-height: 45px; border: 2px solid #cccccc; border-radius: 5px; background: #ffffff; padding: 0 10px; }
+        .register-input:focus { outline: 0; }
+        .register-input::-moz-placeholder { color: #C3C3C3; }
+        .register-input:-ms-input-placeholder { color: #C3C3C3; }
+        .register-input::-webkit-input-placeholder { color: #C3C3C3; }
+        .register-bt { opacity: 0.5; width: 100%; height: 45px; display: block; line-height: 45px; color: #ffffff; background: #FF3C4C; font-size: 16px; border-radius: 5px; margin-top: 20px; }
+        .djs { background-color: #E5E5E5; display: none; position: absolute; top: 37px; right: 25px; color: #A9A9A9; padding: 0px 10px; border-radius: 4px; font-size: 12px; height: 30px; line-height: 30px; }
+        .cxfs { background-color: #fff; display: none; position: absolute; top: 37px; right: 25px; color: #FF3444; padding: 0px 10px; border-radius: 4px; border: 1px solid #FF3444; font-size: 12px; height: 30px; line-height: 30px; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12 register-menu">
+                <ul class="list-inline">
+                    <li>
+                        输入手机号
+                    </li>
+                    <li>
+                        <img src="../../image/user/wd_tag_arrow_hui.png" />
+                    </li>
+                    <li class="active">
+                        输入验证码
+                    </li>
+                    <li>
+                        <img src="../../image/user/wd_tag_arrow_hui.png" />
+                    </li>
+                    <li>
+                        设置密码，完成注册
+                    </li>
+                </ul>
+            </div>
+            <div class="col-xs-12" style="margin-top:20px">
+                <p>
+                    验证码已发送到<span class="mobile"></span>，请查收
+                </p>
+                <input type="number" class="yzm register-input" placeholder="请输入验证码" oninput="InputNull()" />
+                <span class="djs">
+                    <span class="djs-num">60</span>秒后重发
+                </span>
+                <span class="cxfs" onclick="GetYZM()" tapmode="cb">
+                    重新获取
+                </span>
+            </div>
+            <div class="col-xs-12 text-center">
+                <span class="register-bt" onclick="RegisterNext()" tapmode="cb">下一步</span>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/JQuery.md5.js"></script>
+<script type="text/javascript" src="../../script/config.js"></script>
+<script type="text/javascript" src="../../script/wsw.js"></script>
+<script type="text/javascript">
+
+    var yzmtf = false;
+    var mobile = "";
+    var timer = 60;
+    var yzm_md5 = "";
+    apiready = function () {
+        localStorage.setItem("register_yzm", true);
+
+        var frameParam = api["pageParam"];
+        mobile = frameParam["mobile"];
+        $api.text($api.dom(".mobile"), mobile);
+
+        //获取验证码
+        GetYZM();
+
+        //监听键盘前进按钮
+        window.onkeydown = function (event) {
+            if (event.keyCode == 13 || event.keyCode == 9) {
+                RegisterNext();
+            }
+        };
+    };
+
+    //计时器
+    function Timer() {
+        if (timer > 0) {
+            timer--;
+            $api.text($api.dom(".djs-num"), timer);
+        } else {
+            $api.css($api.dom(".djs"), "display: none");
+            $api.css($api.dom(".cxfs"), "display: block");
+            timeint = window.clearInterval(timeint);
+        }
+    };
+
+    var timeint;
+    //获取验证码
+    function GetYZM() {
+        api.ajax({
+            url: ApiUrl.GetYZM + mobile,
+            method: 'get',
+        }, function (ret, err) {
+            if (ret) {
+                if (ret.s == 1) {
+                    timer = 60;
+                    yzm_md5 = ret.r;
+                    $api.css($api.dom(".djs"), "display:block");
+                    $api.css($api.dom(".cxfs"), "display:none");
+
+                    timeint = self.setInterval("Timer()", 1000);
+                }
+            };
+        });
+    };
+
+    var yzm = "";
+    //判断内容
+    function InputNull() {
+        var v = $api.val($api.dom(".yzm"));
+        if (v.length == 6) {
+            yzm = v;
+            $api.css($api.dom(".register-bt"), 'opacity:1;');
+            yzmtf = true;
+        } else {
+            $api.css($api.dom(".register-bt"), 'opacity:0.5;');
+            yzmtf = false;
+        }
+    }
+
+    //获取MD5加密
+    function MD5(Auth) {
+        var Auth = hex_md5(Auth);
+        return Auth;
+    }
+
+    function RegisterNext() {
+        if (yzm_md5 == MD5(yzm)) {
+            yzm_md5 = "";
+            OpenFramWin("register_mm", "../../html/loginregister/register_mm.html", "设置密码", { "mobile": mobile }, "../../html/frame/frame3.html");
+        } else
+        {
+            api.toast({
+                msg:"验证码错误",
+                duration: 2000,
+                location: 'middle'
+            });
+        }
+    };
+</script>
+</html>

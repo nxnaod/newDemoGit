@@ -1,0 +1,168 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>我的粉丝</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/font.css" />
+    <style>
+        html, body { background: #F0F0F0; }
+        .top { display: block; height: 130px; width: 100%; background-color: #FE4F3F; color: #ffffff; }
+        .top p:first-child { font-size: 18px; margin-top: 25px; }
+        .top p:last-child { font-size: 14px; }
+        .top p:last-child span { font-size: 20px; }
+
+        .ljsy { display: block; width: 100%; line-height: 40px; font-size: 14px; height: 40px; color: #ffffff; border-top: 1px solid #FF8383; }
+        .ljsy-bt { background: #fff; border-bottom: 1px solid #EBEBEB; }
+        .ljsy-bt p { margin-bottom: 5px; }
+        .ljsy-bt img { width: 30px; height: 30px; margin-top: 5px; }
+        .ljsy-bt .col-xs-6:first-child { border-right: 1px solid #EBEBEB; }
+
+        td { text-align: center; vertical-align: middle !important; padding: 5px 8px !important; }
+        td.name { text-align: left; }
+        td.name span { font-size: 10px; }
+        td p { margin-bottom: 0; }
+        .yj { color: #FF0000; font-size: 16px; }
+        thead td { font-size: 16px; padding: 13px 8px !important; }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <p>累计粉丝&nbsp;<span class="fans-num">0</span>&nbsp;人</p>
+                    <p><span class="total-num">0.00</span>&nbsp;元</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ljsy-bt">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-6 text-center" onclick="Sign()" tapmode="cb">
+                    <img src="../../image/distribution/qiandao.png" />
+                    <p>签到有礼</p>
+                </div>
+                <div class="col-xs-6 text-center" onclick=" ShareF()" tapmode="cb">
+                    <img src="../../image/distribution/yq.png" />
+                    <p>邀请拿好礼</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12" style="padding-left:0;padding-right:0;background-color:#ffffff;margin-top:10px">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <td style="width:50%">好友信息</td>
+                            <td style="width:50%">贡献佣金</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script src="../../script/config.js"></script>
+<script src="../../script/wsw.js"></script>
+<script type="text/javascript">
+    apiready = function () {
+        api.setRefreshHeaderInfo({
+            visible: true,
+            bgColor: '#F4F4F4',
+            textColor: '#A2A2A2',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            showTime: true
+        }, function (ret, err) {
+            plist = "";
+            page = 0;
+            GetContent();
+            api.refreshHeaderLoadDone();
+        });
+        GetContent();
+    };
+
+    function GetContent()
+    {
+        if (localStorage.getItem('LoginState')) {
+            api.showProgress({
+                style: 'default',
+                animationType: 'fade',
+                title: '数据加载中...',
+                modal: true
+            });
+            api.ajax({
+                url: ApiUrl.GetFans,
+                method: 'get',
+            }, function (ret, err)
+            {
+                if (ret) {
+                    if (ret.s == 1) {
+                        var fansnum = ret.r.length;
+                        var html = '';
+                        var totalnum = 0;
+                        $api.text($api.dom(".fans-num"), fansnum);
+                        for (var i in ret.r) {
+                            html += '<tr>\
+                                            <td class="name">\
+                                                <p>' + ret.r[i].ddusername + '</p>\
+                                                <span>' + ret.r[i].regtime + '</span>\
+                                            </td>\
+                                            <td class="yj">+' + ret.r[i].tgyj + '</td>\
+                                        </tr>';
+                            totalnum += parseInt(ret.r[i].tgyj, 2);
+                        };
+                        $api.text($api.dom(".total-num"), totalnum);
+                        $api.html($api.dom("tbody"), html);
+                    };
+                };
+                api.hideProgress();
+            });
+        } else {
+            api.alert({
+                title: '提示',
+                msg: '登录状态失效',
+            }, function (ret, err) {
+                if (ret) {
+                    api.openWin({
+                        name: 'login',
+                        url: '../../html/loginregister/login.html',
+                        bounces: false,
+                        allowEdit: true,
+                        rect: {
+                            x: 0,
+                            y: 0,
+                            w: 'auto',
+                            h: 'auto'
+                        },
+                        animation: {
+                            type: 'movein',
+                            subType: 'from_bottom',
+                            duration: 300
+                        },
+                    });
+                }
+            });
+        };
+    }
+
+    function ShareF() {
+        var title = localStorage.getItem("appwsw_fxtitle");
+        var description = localStorage.getItem("appwsw_fxms");
+        var img = localStorage.getItem("appwsw_fxtplink");
+        var rec_url = GetDataUrl() + "/" + localStorage.getItem("fxurl");
+        Share(title, description, img, rec_url);
+    };
+</script>
+</html>

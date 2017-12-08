@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>收入明细</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link href="../../css/bootstrap.css" rel="stylesheet" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        html, body { background-color: #F1EFF2; }
+        .nolist { display: block; width: 100%; text-align: center; color: #999; font-size: 10px; margin-top: 20px; }
+        .nolist img { height: 100px; width: auto; }
+        .sz-list { margin-top: 10px; }
+        .sz-list li { background-color: #ffffff; margin-left: -15px; margin-right: -15px; padding: 15px 15px; margin-bottom: 2px; }
+        .sz-list li p { margin-bottom: 0; height: 20px; }
+        .sz-list li p .time { font-size: 12px; margin-top: 3px; color: #666; }
+        .sz-list li .jlc { color: #00A500; display: block; margin-top: 5px; }
+        .sz-list li p span { display: block; }
+
+        /*返回首页*/
+        .return-top { width: 45px; height: 45px; background-color: #DD2727; color: #fff; font-size: 12px; position: fixed; z-index: 99; bottom: 55px; right: 10px; text-align: center; opacity: 0; line-height: 36px; border-radius: 44px; background-color: #FFF; border: 1px solid #CCC; padding-top: 2px; text-align: center; }
+        .return-top a { color: #BBB; display: block; text-align: center; }
+        .return-top.active { opacity: 1; filter: Alpha(opacity=100); }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12 content">
+                <ul class="list-unstyled sz-list"></ul>
+                <!--<div class="nolist">
+                    <img src="../../image/user/nolist.png" />
+                    <p>您还没有记录哦~</p>
+                </div>-->
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="return-top">
+            <div class="fhdb">
+                <a href="javascript:;" onclick="ReturnTop()" tapmode="cb">
+                    <img src="../../image/up.png" style="width:24px" />
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/config.js"></script>
+<script type="text/javascript" src="../../script/wsw.js"></script>
+<script type="text/javascript" src="../../script/doT.min.js"></script>
+<script type="text/x-dot-template" id="slist">
+    {{ for(var i=0;i<it.length;i++){ }}
+    <li>
+        <p class="name">
+            {{=it[i].title }}
+            <span class="pull-right time">{{=it[i].addtime}}</span>
+        </p>
+        <span class="jlc">{{=it[i].content}}</span>
+    </li>
+    {{ } }}
+</script>
+<script type="text/javascript">
+    var slist = "";
+    var page = 0;
+    var pagemax = 1;
+    apiready = function () {
+        api.setRefreshHeaderInfo({
+            visible: true,
+            bgColor: '#F4F4F4',
+            textColor: '#A2A2A2',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            showTime: true
+        }, function (ret, err) {
+            slist = "";
+            page = 0;
+            pagemax = 1;
+            GetContent();
+            api.refreshHeaderLoadDone();
+        });
+        GetContent();
+
+        //滑动到底部刷新
+        api.addEventListener({
+            name: 'scrolltobottom',
+            extra: {
+                threshold: 0
+            }
+        }, function (ret, err) {
+            GetContent();
+        });
+    };
+    $(window).scroll(function () {
+        if ($(document).scrollTop() >= 200) {
+            $(".return-top").addClass("active");
+        };
+        if ($(document).scrollTop() < 200) {
+            $(".return-top").removeClass("active");
+        };
+    });
+    function GetContent() {
+        if (pagemax > page) {
+            api.showProgress({
+                style: 'default',
+                animationType: 'fade',
+                title: '数据加载中...',
+                modal: true
+            });
+            page++;
+            api.ajax({
+                url: ApiUrl.GetShouList + page,
+                method: 'get',
+            }, function (ret, err) {
+                var nohtml = '<div class="nolist">\
+                                    <img src="../../image/user/nolist.png" />\
+                                    <p>您还没有记录哦~</p>\
+                                </div>';
+                if (ret) {
+                    if (ret.s == 1) {
+                        pagemax = ret.r.total;
+                        if (ret.r.shuju_data != null) {
+                            if (ret.r.shuju_data.length > 0) {
+                                var List = doT.template($api.text($api.dom("#slist")));
+                                slist += List(ret.r.shuju_data);
+                                $api.html($api.dom('.sz-list'), slist);
+                                api.parseTapmode();
+                            } else if (page == 1) {
+                                $api.html($api.dom('.content'), nohtml);
+                            };
+                        } else if (page == 1) {
+                            $api.html($api.dom('.content'), nohtml);
+                        };
+                    } else {
+                        $api.html($api.dom('.content'), nohtml);
+                    };
+                } else {
+                    $api.html($api.dom('.content'), nohtml);
+                    api.toast({
+                        msg: '数据加载失败，请下拉刷新数据',
+                        duration: 5000,
+                        location: 'middle'
+                    });
+                }
+                api.hideProgress();
+            });
+        } else {
+            api.toast({
+                msg: '已经到底了~',
+                duration: 5000,
+                location: 'middle'
+            });
+        };
+    };
+</script>
+</html>

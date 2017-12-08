@@ -1,0 +1,682 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>精选</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.css" />
+    <link href="../../css/product.css" rel="stylesheet" />
+    <link href="../../css/public.css" rel="stylesheet" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        html, body { background-color: #ffffff; }
+        .banner { display: block; width: 100%; height: auto; }
+        .jx-menu { margin-top: 15px; }
+        .jx-menu-item { width: 20%; }
+        .jx-menu-item > div { display: block; width: 100%; color: #4D4D4D; }
+        .jx-menu-item > div p { margin-top: 5px; font-size: 12px; height: 17px; overflow: hidden; }
+
+        .roll-news img { height: 16px; overflow: hidden; display: block; float: left; position: absolute; padding-left: 2.5%; }
+        #hotnews { height: 16px; overflow: hidden; display: block; float: left; line-height: 16px; margin-left: 90px; width: 100%; margin-bottom: 0; border-left: 1px solid #DEDFDE; padding-right: 95px; }
+        #hotnews li { font-size: 12px; height: 16px; overflow: hidden; display: block; width: 100%; text-decoration: none; color: #737573; }
+
+        .hyyq { background: #F7EFF7; margin-top: 10px; display: block; width: 100%; height: auto; }
+
+        .product-list { background-color: #ffffff; }
+
+        .cb { opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="banner"></div>
+    <div class="container-fluid jx-menu">
+        <div class="row">
+            <div class="col-xs-2 text-center jx-menu-item">
+                <div onclick="OpenCId(this,'jiu')" tapmode="cb" data-id="">
+                    <img src="../../res/9y9.png" style="width: 70%" class="menu-item-img" />
+                    <p class="menu-item-title">九块九</p>
+                </div>
+            </div>
+            <div class="col-xs-2 text-center jx-menu-item">
+                <div onclick="OpenMallRebate()" tapmode="cb" data-id="">
+                    <img src="../../res/fl.png" style="width: 70%" class="menu-item-img" />
+                    <p class="menu-item-title">商城返利</p>
+                </div>
+            </div>
+            <div class="col-xs-2 text-center jx-menu-item">
+                <div onclick="OpenCId(this, 'zhidemai')" tapmode="cb" data-id="">
+                    <img src="../../res/zdm.png" style="width: 70%" class="menu-item-img" />
+                    <p class="menu-item-title">值得买</p>
+                </div>
+            </div>
+            <div class="col-xs-2 text-center jx-menu-item">
+                <div onclick="Sign('天天赚钱')" tapmode="cb" data-id="">
+                    <img src="../../res/zq.png" style="width: 70%" class="menu-item-img" />
+                    <p class="menu-item-title">天天赚钱</p>
+                </div>
+            </div>
+            <div class="col-xs-2 text-center jx-menu-item">
+                <div onclick="OpenInvite()" tapmode="cb" data-id="">
+                    <img src="../../res/yq.png" style="width: 70%" class="menu-item-img" />
+                    <p class="menu-item-title">有奖邀请</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="index-ad1">
+    </div>
+
+    <div class="roll-news">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12 plr2" style="height:16px; overflow: hidden;">
+                    <img src="../../image/home/yhkb.png" />
+                    <ul class="list-unstyled" id="hotnews"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="hyyq" tapmode="cb" onclick="Sign('新人专享')" style="display:none">
+        <img src="../../res/hyyq.png" style="width:100%;" class="hyyq-img" />
+    </div>
+    <div class="index-ad2">
+
+    </div>
+    <div class="container-fluid product-title" style="margin-top:10px">
+        <div class="row">
+            <div class="col-xs-12 text-center" style="line-height:34px;height:34px">
+                <img src="../../image/product/huo.png" style="height:15px;" />&nbsp;<span class="gxsj">每天早10点·晚8点上新</span>
+            </div>
+        </div>
+    </div>
+    <div class="product-list">
+        <div class="container-fluid">
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="return-top">
+            <div class="fhdb">
+                <a href="javascript:;" onclick="ReturnTop()" tapmode="cb">
+                    <img src="../../image/up.png" style="width:24px" />
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/doT.min.js"></script>
+<script type="text/javascript" src="../../script/config.js"></script>
+<script type="text/javascript" src="../../script/wsw.js"></script>
+<script type="text/x-dot-template" id="plist2">
+    <div class="row style2">
+        {{ for(var i=0;i<it.length;i++){ }}
+        <div class="col-xs-6" onclick="OpenProductDetails('{{=it[i].lq_url}}','{{=it[i]._url}}','{{=it[i].laiyuan_type}}','{{=it[i].price_jian}}','{{=it[i].discount_price}}','{{=it[i].fanli_je}}','{{=it[i].data_id}}','{{=it[i].title}}','{{=it[i].laiyuan}}')" tapmode="cb">
+            <div class="product-list-item" tapmode="cb">
+                <div class="product-img">
+                    <img class="pro3-img" onload="LoadImage(this, '{{=it[i].img}}')" src="../../image/product/home_default.png" style="width: 100%!important;" />
+                </div>
+                {{ if(it[i].price_jian!=""&&it[i].price_jian!=0){ }}
+                <div class="youhuiquan">
+                    <span> 优惠券</span>
+                    <p>{{=it[i].price_jian}}</p>
+                </div>
+                {{ } }}
+                <h4 class="title">
+                    <span class="icon">{{=GetLaiYuan(it[i].laiyuan_type)}}</span>{{=it[i].title}}
+                </h4>
+                <div class="price">
+                    <div class="preferential-price">￥{{var price=0; if(parseFloat(it[i].discount_price) >=parseFloat(it[i].price_man)){price=(parseFloat(it[i].discount_price)-parseFloat(it[i].price_jian))}else{price=parseFloat(it[i].discount_price)} }}
+{{=parseFloat(price).toFixed(1)}}&nbsp;</div>
+                    <del class="cost-price">
+                        {{=it[i].price}}
+                    </del>
+                </div>
+                <div class="fl">
+                    <div class="flje">
+                        买后返:{{=(it[i].fanli_je/it[i].discount_price*100).toFixed(2)}}%
+                    </div>
+                    <div class="yq">已抢{{=it[i].sell}}</div>
+                </div>
+            </div>
+        </div>
+        {{ } }}
+    </div>
+</script>
+<script type="text/x-dot-template" id="plist1">
+    <div class="row style1">
+        {{ for(var i=0;i<it.length;i++){ }}
+        <div class="col-xs-12 " onclick="OpenProductDetails('{{=it[i].lq_url}}','{{=it[i]._url}}','{{=it[i].laiyuan_type}}','{{=it[i].price_jian}}','{{=it[i].discount_price}}','{{=it[i].fanli_je}}','{{=it[i].data_id}}','{{=it[i].title}}','{{=it[i].laiyuan}}')" tapmode="cb">
+            <div class="product-list-item">
+                <div class="media">
+                    <a class="media-left" href="javascript:;">
+                        <img onload="LoadImage(this, '{{=it[i].img}}')" src="../../image/product/home_default.png">
+                    </a>
+                    <div class="media-body">
+                        <h4 class="title">{{=it[i].title}}</h4>
+                        <div class="price">
+                            <div class="preferential-price">
+                                <small>￥</small>{{var price=0; if(parseFloat(it[i].discount_price) >=parseFloat(it[i].price_man)){price=(parseFloat(it[i].discount_price)-parseFloat(it[i].price_jian))}else{price=parseFloat(it[i].discount_price)} }}
+{{=parseFloat(price).toFixed(1)}}
+                            </div>
+                            <div class="cost-price">
+                                <div class="yj">
+                                    原价：{{=it[i].price}}
+                                </div>
+                                <div class="lqj">
+                                    买后返<strong style="color:#FF3444">{{=(it[i].fanli_je/it[i].discount_price*100).toFixed(2)}}</strong>%
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fl">
+                            {{ if(it[i].price_jian!=""&&it[i].price_jian!=0){ }}
+                            <div class="yhq pull-left">
+                                <div class="a pull-left">优惠券</div>
+                                <div class="b pull-left">{{=it[i].price_jian}}元</div>
+                            </div>
+                            {{ } }}
+                            <div class="buybt">
+                                去{{=GetLaiYuan(it[i].laiyuan_type)}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{ } }}
+    </div>
+</script>
+<script type="text/x-dot-template" id="newlist">
+    {{ for(var i=0;i<it.length;i++){ }}
+    <li onclick="OpenNewDetails('{{=it[i].id}}','{{=it[i].title}}')" tapmode="cb">&nbsp;&nbsp;{{=it[i].title}}</li>
+    {{ } }}
+</script>
+<script type="text/javascript">
+
+    var UIScrollPicture;
+    var bannerimg = new Array();
+    var banner;
+    var plist = "";
+    var page = 0;
+    var pagemax = 1;
+
+    var alibaichuan;
+    var baichuaninit = false;
+
+    var mad1;//新人福利
+    var mad2;//模态活动
+    var ad1;//广告1
+    var ad2;//广告2
+    var winH;
+    apiready = function () {
+        //初始化百川
+        alibaichuan = api.require('alibaichuan');
+        initSDK();
+        $api.text($api.dom('.gxsj'), localStorage.getItem("appwsw_listTip"));
+        $api.css($api.dom(".banner"), 'height:' + api.winWidth / 3 + 'px;');
+        api.setRefreshHeaderInfo({
+            visible: true,
+            bgColor: '#F4F4F4',
+            textColor: '#A2A2A2',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            showTime: true
+        }, function (ret, err) {
+            plist = "";
+            page = 0;
+            OpenHome();
+            api.refreshHeaderLoadDone();
+        });
+        UIScrollPicture = api.require('UIScrollPicture');
+        OpenHome();
+        //滑动检测
+        HDJC();
+
+        //滑动到底部刷新
+        api.addEventListener({
+            name: 'scrolltobottom',
+            extra: {
+                threshold: 0
+            }
+        }, function (ret, err) {
+            GetProductList();
+        });
+
+        mad1 = $api.strToJson(localStorage.getItem("appwsw_xinrenfuli"));
+        mad2 = $api.strToJson(localStorage.getItem("appwsw_huodong"));
+        ad1 = $api.strToJson(localStorage.getItem("appwsw_indexad1"));
+        ad2 = $api.strToJson(localStorage.getItem("appwsw_indexad2"));
+        var indexad1 = $api.dom(".index-ad1");
+        if (ad1.k == 1) {
+            if (ad1.v.type == 1) {
+                $api.html(indexad1, UnicodeToAscii(ad1.v.content));
+            } else {
+                var _html = '<div style="display:block" onclick="AdOpenUrl(\'' + ad1.v.title + '\',\'' + ad1.v.link + '\')">\
+                                        <img src="' + GetDataUrl() + '/' + ad1.v.img + '"  />\
+                                    </div>'
+                $api.html(indexad1, _html);
+            };
+        };
+
+        var indexad2 = $api.dom(".index-ad2");
+        if (ad2.k == 1) {
+            if (ad2.v.type == 1) {
+                $api.html(indexad2, UnicodeToAscii(ad2.v.content));
+            } else {
+                var _html = '<div style="display:block" onclick="AdOpenUrl(\'' + ad2.v.title + '\',\'' + ad2.v.link + '\')">\
+                                        <img src="' + GetDataUrl() + '/' + ad2.v.img + '"  />\
+                                    </div>'
+                $api.html(indexad2, _html);
+            };
+        };
+
+        winH = api.winHeight;
+        var hyyq = $api.dom(".hyyq");
+        if (mad1.k == 1) {
+            $api.css(hyyq, "display:block");
+            $api.attr($api.dom(".hyyq-img"), "src", GetDataUrl() + "/" + mad1.v1.img);
+        };
+        //获取用户信息判断广告
+        if (localStorage.getItem("madtime")) {
+            var date = localStorage.getItem("madtime");
+            if (date == (new Date).getDate()) {
+            } else {
+                if (localStorage.getItem("LoginState")) {
+                    if (mad1.k == 1) {
+                        GetUserInfo();
+                    } else if (mad2.k == 1) {
+                        OpenPopAd(false);
+                    };
+                } else {
+                    if (mad2.k == 1) {
+                        OpenPopAd(false);
+                    };
+                };
+            };
+        } else {
+            if (localStorage.getItem("LoginState")) {
+                if (mad1.k == 1) {
+                    GetUserInfo();
+                } else if (mad2.k == 1) {
+                    OpenPopAd(false);
+                };
+            } else {
+                if (mad2.k == 1) {
+                    OpenPopAd(false);
+                };
+            };
+        };
+        api.parseTapmode();
+        //GetLog(api.frameName, api.winName);//输出日志
+    };
+
+    $(window).scroll(function () {
+        if ($(document).scrollTop() >= 200) {
+            $(".return-top").addClass("active");
+        };
+        if ($(document).scrollTop() < 200) {
+            $(".return-top").removeClass("active");
+        };
+    });
+
+    //初始化百川
+    function initSDK() {
+        var param = {
+            isvcode: "App"
+        };
+        alibaichuan.initTaeSDK(param, function (ret, err) {
+            if (ret) {
+                if (ret.code == 0) {
+                    baichuaninit = true;
+                }
+            };
+        });
+    };
+
+    //启动请求
+    function OpenHome() {
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '数据加载中...',
+            modal: true
+        });
+        api.ajax({
+            url: ApiUrl.GetAppHome,
+            method: 'get',
+        }, function (ret, err) {
+            if (ret) {
+                if (ret.s == 1) {
+                    banner = ret.r.banner;
+                    for (var i = 0; i < ret.r.banner.length; i++) {
+                        var img = GetDataUrl() + "/" + ret.r.banner[i].img;
+                        bannerimg.push(img);
+                    };
+                    Banner();
+                    for (var i = 0; i < ret.r.midicon.length; i++) {
+                        $(".jx-menu-item").eq(i).find("div").attr("data-id", ret.r.midicon[i].id);
+                        $(".menu-item-img").eq(i).attr("src", GetDataUrl() + "/" + ret.r.midicon[i].img);
+                        $(".menu-item-title").eq(i).text(ret.r.midicon[i].title);
+                    };
+
+                    var new_List = doT.template($api.text($api.dom("#newlist")));
+                    var newlist = new_List(ret.r.news);
+                    $api.html($api.dom('#hotnews'), newlist);
+                    //新闻滚动
+                    setTimeout("startmarquee(16, 15, 2000, 'hotnews')", 3500);
+                    //获取商品列表
+                    GetProductList();
+                };
+            } else {
+                api.hideProgress();
+                api.alert({
+                    title: '提示',
+                    msg: err.msg,
+                }, function (ret, err) {
+
+                });
+            }
+        });
+    };
+
+    //banner
+    function Banner() {
+        UIScrollPicture.open({
+            rect: {
+                x: 0,
+                y: 0,
+                w: api.winWidth,
+                h: api.winWidth / 3
+            },
+            data: {
+                paths: bannerimg,
+            },
+            styles: {
+                caption: {                          //（可选项）JSON对象；说明文字区域样式
+                    height: 35,                     //（可选项）数字类型；说明文字区域高度；默认：35.0
+                    color: '#E0FFFF',               //（可选项）字符串类型；说明文字字体颜色，支持 rgb、rgba、#；默认：'#E0FFFF'
+                    size: 13,                       //（可选项）数字类型；说明文字字体大小；默认：13.0
+                    bgColor: '#696969',             //（可选项）字符串类型；说明文字区域的背景色，支持 rgb、rgba、#；默认：'#696969'
+                    position: 'bottom',              //（可选项）字符串类型；说明文字区域的显示位置；默认：'bottom'//取值范围：//overlay（悬浮在图片上方，底部与图片底部对齐）//bottom（紧跟在图片下方，顶部与图片底部对齐）
+                    alignment: 'center'             //（可选项）字符串类型：说明文字在水平线上的位置；默认：left//取值范围：//right（居右限时）//center（居中显示）//left（居左显示）
+                },
+                indicator: {                        //（可选项）JSON对象；指示器样式；不传则不显示指示器
+                    align: 'center',                //（可选项）字符串类型；指示器位置；默认：center //取值范围： //center（居中） //left（靠左） //right（靠右）
+                    color: '#FFFFFF',               //（可选项）指示器颜色 ，支持 rgb、rgba、#；默认：'#FFFFFF'
+                    activeColor: '#DA70D6'          //（可选项）当前指示器颜色，支持 rgb、rgba、#；默认：'#DA70D6'
+                }
+            },
+            contentMode: 'scaleToFill',
+            interval: 5,
+            fixedOn: api.frameName,
+            loop: true,
+            fixed: false
+        }, function (ret, err) {
+            if (ret) {
+                if (ret.eventType == "click") {
+                    if (banner[ret.index].link != "") {
+                        OpenFramWin("banner" + ret.index, banner[ret.index].link, banner[ret.index].title, {});
+                    };
+                };
+            };
+        });
+    }
+
+    //获取用户信息
+    function GetUserInfo() {
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '数据加载中...',
+            modal: true
+        });
+        api.ajax({
+            url: ApiUrl.GetUserInfo,
+            method: 'get',
+        }, function (ret, err) {
+            if (ret) {
+                if (ret.s != 1) {
+                } else {
+                    var signnum = ret.r.signnum;
+                    var xinrennum = localStorage.getItem("appwsw_xinrencount");
+                    if (signnum <= xinrennum) {
+                        OpenPopAd(true);
+                    } else {
+                        OpenPopAd(false);
+                    };
+                };
+            };
+            api.hideProgress();
+        });
+    };
+
+    //弹出广告模态
+    function OpenPopAd(_tf) {
+        var _imgpath = "";
+        var _url = "";
+        var _imgurl;
+        var _title = "";
+        if (_tf) {
+            _imgpath = GetDataUrl() + "/" + mad1.v.img;
+            _url = mad1.v.link;
+            _title = mad1.v.title;
+        } else {
+            _imgpath = GetDataUrl() + "/" + mad2.v.img;
+            _url = mad2.v.link;
+            _title = mad2.v.title;
+        };
+        var mb = (winH - 360) / 2;
+        var dialogBox = api.require('dialogBox');
+        api.imageCache({
+            url: _imgpath
+        }, function (ret, err) {
+            dialogBox.discount({
+                rect: {
+                    w: 240,
+                    h: 360
+                },
+                styles: {
+                    bg: '#FFF',
+                    image: {
+                        path: ret.url,
+                        marginB: mb
+                    },
+                    cancel: {
+                        icon: 'widget://image/home/del.png',
+                        marginB: mb - 45,
+                        w: 40,
+                        h: 40
+                    }
+                }
+            }, function (ret) {
+                if (ret.eventType == 'image') {
+                    dialogBox.close({
+                        dialogName: 'discount'
+                    });
+                    if (_tf) {
+                        AdOpenSign();
+                    } else {
+                        AdOpenUrl(_title, _url);
+                    }
+                };
+                if (ret.eventType == 'cancel') {
+                    dialogBox.close({
+                        dialogName: 'discount'
+                    });
+                };
+            });
+        });
+        localStorage.setItem("madtime", (new Date).getDate());
+    };
+
+    //获取产品列表
+    function GetProductList() {
+        if (pagemax > page) {
+            api.showProgress({
+                style: 'default',
+                animationType: 'fade',
+                title: '数据加载中...',
+                modal: true
+            });
+            page++;
+            var _url = GetDataUrl() + '/appwsw/index.php?mod=goods&act=index&code=' + localStorage.getItem("appwsw_indexbankuai") + '&page=' + page;
+            api.ajax({
+                url: _url,
+                method: 'get',
+            }, function (ret, err) {
+                if (ret) {
+                    if (ret.s == 1) {
+                        pagemax = ret.r.total;
+                        if (ret.r.shuju_data != null) {
+                            if (ret.r.shuju_data.length > 0) {
+                                //主列表列表类型
+                                var PList;
+                                if (localStorage.getItem("appwsw_indexlist") == 1) {
+                                    $api.css($api.dom(".product-list"), "background-color: #F0F0F0;");
+                                    $api.css($api.dom(".product-title"), "background: #f0f0f0;");
+                                    PList = doT.template($api.text($api.dom("#plist2")));
+                                } else {
+                                    $api.css($api.dom(".product-list"), "background: #ffffff;");
+                                    $api.css($api.dom(".product-title"), "background: #ffffff;");
+                                    PList = doT.template($api.text($api.dom("#plist1")));
+                                };
+                                plist += PList(ret.r.shuju_data);
+                                $api.html($api.dom('.product-list .container-fluid'), plist);
+                                var h = $api.cssVal($api.dom(".style2 .product-list-item"), "width");
+                                $(".style2 .product-list-item .pro3-img").css("height", h);
+                                api.parseTapmode();
+                            };
+                        };
+                    };
+                    api.hideProgress();
+                } else {
+                    api.hideProgress();
+                };
+            });
+        } else {
+            api.hideProgress();
+            api.toast({
+                msg: '已经到底了~',
+                duration: 5000,
+                location: 'middle'
+            });
+        };
+    };
+
+    //打开新闻详情
+    function OpenNewDetails(id, title) {
+        OpenFramWin("NewDetails" + id, "../../html/news/news_content.html", title, { "newID": id }, "../../html/frame/frame3.html");
+    }
+
+    //打开模块商品
+    function OpenCId(_this, _code) {
+        var id = $(_this).attr("data-id");
+        var title = $(_this).find('p').text();
+        if (title != "" && title != undefined && title != 'undefined') {
+            OpenFramWin(_code, "", title, { "code": _code, "title": title }, "../../html/product/product_module.html");
+        };
+    };
+
+    //滑动检测
+    function HDJC() {
+        var pageParam = api.pageParam;
+        var menuindex = pageParam["menuindex"]
+        //左滑动
+        api.addEventListener({
+            name: 'swipeleft'
+        }, function (ret, err) {
+            api.execScript({
+                name: 'root',
+                frameName: 'home',
+                script: 'TypeMenuChange(' + (menuindex + 1) + ');',
+            });
+        });
+
+        //右滑动
+        api.addEventListener({
+            name: 'swiperight'
+        }, function (ret, err) {
+            api.execScript({
+                name: 'root',
+                frameName: 'home',
+                script: 'TypeMenuChange(' + (menuindex - 1) + ');',
+            });
+        });
+    }
+
+    //打开商品
+    ///_url：优惠券链接，_goto：购买链接，laiyuan_type：来源类型，
+    //price_jian：优惠金额，discount_price：实际价格，fanli_je：返利金额
+    //laiyuan_type=1是淘宝，laiyuan_type=2是天猫，laiyuan_type=3是京东等第三方，laiyuan_type=4是拍拍
+    function OpenProductDetails(_url, _goto_url, laiyuan_type, price_jian, discount_price, fanli_je, pro_id, title, laiyuan_name) {
+        //alert("_url=" + _url + "_goto_url=" + _goto_url + "laiyuan_type=" + laiyuan_type + "price_jian=" + price_jian + "discount_price=" + discount_price + "fanli_je=" + fanli_je);
+        var url = "";
+        BrowseLog(pro_id, title);
+        if (laiyuan_type == 1 || laiyuan_type == 2) {
+            if (_url != "" && _url != "null" && _url != null && price_jian != 0) {
+                url = _url;
+                var param = {
+                    url: url,
+                    mmpid: GetMMID(),
+                    nativeview: false
+                };
+                if (baichuaninit) {
+                    alibaichuan.showDetailByURL(param, function (ret, err) {
+                        if (ret) {
+                            if (ret.code == 999) {
+                                api.ajax({
+                                    url: GetDataUrl() + '/appwsw/index.php?mod=user&act=tbnick&sub=add&value=' + ret.ordercode,
+                                    method: 'get',
+                                }, function (ret, err) { })
+                            }
+                        }
+                    });
+                } else {
+                    api.toast({
+                        msg: '阿里百川初始化失败',
+                        duration: 2000,
+                        location: 'middle'
+                    });
+                };
+            } else {
+                url = _goto_url;
+                OpenWin('no_discount', '../../html/product/no_discount.html', { "url": url, "laiyuan_type": laiyuan_type, "price_jian": price_jian, "discount_price": discount_price, "fanli_je": fanli_je, "pro_id": pro_id, "win_name": api.winName, "fram_name": api.frameName, "laiyuan_name": laiyuan_name }, 'movein', 'from_bottom');
+            };
+        } else {
+            url = _goto_url;
+            OpenWin('no_discount', '../../html/product/no_discount.html', { "url": url, "laiyuan_type": laiyuan_type, "price_jian": price_jian, "discount_price": discount_price, "fanli_je": fanli_je, "pro_id": pro_id, "win_name": api.winName, "fram_name": api.frameName, "laiyuan_name": laiyuan_name }, 'movein', 'from_bottom');
+        }
+    };
+
+    //打开无优惠券
+    function OpenNoProductDetails(laiyuan_type, url, laiyuan_name, pro_id) {
+        var param = {
+            isvcode: "app",
+            itemid: pro_id,
+            mmpid: GetMMID(),
+            nativeview: false
+        };
+        if ((laiyuan_type == 1 || laiyuan_type == 2) && baichuaninit) {
+            alibaichuan.showTaokeItemById(param, function (ret, err) {
+                if (ret) {
+                    if (ret.code == 999) {
+                        api.ajax({
+                            url: GetDataUrl() + '/appwsw/index.php?mod=user&act=tbnick&sub=add&value=' + ret.ordercode,
+                            method: 'get',
+                        }, function (ret, err) { })
+                    }
+                };
+            });
+        } else {
+            OpenFramWin("ProductDetails", url, laiyuan_name, {});
+        };
+    };
+
+    function OpenMallRebate() {
+        OpenFramWin("mall_rebate", "../../html/home/mall_rebate.html", "商城返利", {});
+    }
+</script>
+</html>

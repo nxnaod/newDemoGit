@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>关于我们</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.css" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        html, body { background: #F0F0F0; }
+        .frame-top { background-color: #fff; border-bottom: 1px solid #ddd; }
+        .frame-top .menu-name { color: #000; font-size: 18px; height: 50px; line-height: 50px; }
+        .frame-top .menu-name a { position: absolute; display: block; height: 50px; width: 50px; text-align: left; }
+        .cb { opacity: 0.8; }
+        .frame-top .menu-name a:last-child { width: 100px; text-decoration: none; color: #575757; font-size: 16px; }
+        .frame-top .menu-name a:last-child:focus { text-decoration: none; }
+        a { color: #ff0000; font-size: 18px; text-decoration: none; }
+        a:hover, a:focus { text-decoration: none; color: #ff0000; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid frame-top" id="frame-top">
+        <div class="row">
+            <div class="col-xs-12 text-center menu-name">
+                <a onclick="api.closeWin();" tapmode="cb">
+                    <img src="../../image/return.png" style="height: 20px;margin-top: -5px;" />
+                </a>
+                <span id="title">关于我们</span>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12 text-center" style="margin-top:60px;">
+                <img src="../../icon/icon150x150.png" style="height:90px;width:90px" />
+                <p style="margin-top:10px"><span class="appname">多多返利</span>&nbsp;<span class="appVersion">V1010</span></p>
+            </div>
+            <div class="col-xs-12" style="background:#fff;margin-top:60px;border-bottom:1px solid #DDDDDD;border-top:1px solid #DDDDDD;padding-left:5px;padding-right:5px">
+                <div style="display:block;width:100%;height:60px">
+                    <div class="col-xs-6 text-left" style="padding-left:0;padding-right:0">
+                        <p style="margin-bottom:5px;margin-top:10px">客服热线</p>
+                        <p style="margin-bottom:5px;color:#aaa;font-size:10px">(周一至周五 8:30~18:00)</p>
+                    </div>
+                    <div class="col-xs-6 text-right" style="padding-left:0;padding-right:0">
+                        <a class="tel" href="tel:15910179493" style="height:60px;line-height:60px;display:block;width:100%"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/config.js"></script>
+<script type="text/javascript">
+
+    var appVersion;
+    var appname;
+    var v = $api.dom("#title");
+    var an = $api.dom(".appname");
+    var av = $api.dom(".appVersion");
+    var tel = $api.dom(".tel");
+    apiready = function () {
+
+        appname = api.appName;
+        appVersion = api.appVersion;
+
+        $api.text(v, "关于" + appname);
+        $api.text(an, appname);
+        $api.text(av, appVersion);
+
+        if (localStorage.getItem("appwsw_tel"))
+        {
+            $api.text(tel, localStorage.getItem("appwsw_tel"));
+            $api.attr(tel, "href", "tel:" + localStorage.getItem("appwsw_tel"));
+        }
+    };
+</script>
+</html>

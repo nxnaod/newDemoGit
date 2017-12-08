@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>返利工具</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link href="../../css/bootstrap.css" rel="stylesheet" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        html, body { background: #FF7B00; color: #fff; }
+        .frame-top { background-color: #fff; border-bottom: 1px solid #ddd; }
+        .frame-top .menu-name { color: #000; font-size: 18px; height: 50px; line-height: 50px; }
+        .cb { opacity: 0.8; }
+        .problem span { display: block; width: 50%; height: 48px; line-height: 48px; }
+        .input-group-addon { background: #fff; border: none; border-radius: 8px; }
+        .form-control { height: 50px; background: #fff; border: none; -webkit-box-shadow: none; box-shadow: none; }
+        .form-control:focus { border: none; outline: 0; -webkit-box-shadow: none; box-shadow: none; }
+        .submit-bt { color: #f2182b; font-size: 16px; background: #FFF43F; font-family: SimHei; font-weight: bold; padding: 6px 20px; }
+        .paste { display: none; position: absolute; z-index: 9; padding: 10px 15px; font-size: 12px; background-color: #fff; border: 1px solid #ddd; left: 20px; top: -30px; color: #000; border-radius: 5px; }
+        .display-b { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid frame-top" id="frame-top">
+        <div class="row">
+            <div class="col-xs-12 text-center menu-name">
+                <span id="title">返利工具</span>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12 problem">
+                <span class="pull-left text-left" style="font-size:16px">淘宝返利</span>
+                <span class="pull-right text-right" onclick="Course()" tapmode="cb">怎么返？></span>
+            </div>
+            <div class="col-xs-12 text-center" style="margin-top:20%">
+                <img src="../../image/rebatetools/header-img.png" style="width:85%;height:auto" />
+            </div>
+            <div class="col-xs-12">
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <img src="../../image/rebatetools/icon_search.png" style="width:15px;height:15px" />
+                    </span>
+                    <input id="search-val" type="text" class="form-control" placeholder="宝贝名称：（如连衣裙）" onfocus="OpenPaste(1)" onblur="OpenPaste(2)">
+                    <span class="paste" onclick="Paste()" tapmode="cb">粘贴</span>
+                    <span class="input-group-addon submit-bt" onclick="Submit()" tapmode="cb">搜淘宝</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script src="../../script/config.js"></script>
+<script src="../../script/wsw.js"></script>
+<script type="text/javascript">
+    var alibaichuan = null;
+    apiready = function () {
+        //监听键盘前进按钮
+        window.onkeydown = function (event) {
+            if (event.keyCode == 13 || event.keyCode == 9) {
+                Submit();
+            };
+        };
+        //GetLog(api.frameName, api.winName);//输出日志
+    };
+
+    function Course() {
+        OpenFramWin("Course", "../../html/news/news_content.html", "如何返？", { "newID": 1006 }, "../../html/frame/frame3.html");
+    }
+
+    function OpenPaste(t) {
+        if (t == 1) {
+            $api.addCls($api.dom(".paste"), "display-b");
+        } else {
+            $api.removeCls($api.dom(".paste"), "display-b");
+        }
+    };
+
+    function Paste() {
+        var clipBoard = api.require('clipBoard');
+        clipBoard.get(function (ret, err) {
+            if (ret) {
+                if (ret.value != "" && ret.value != null) {
+                    $api.val($api.dom("#search-val"), ret.value);
+                    $api.removeCls($api.dom(".paste"), "display-b");
+                } else {
+                    api.toast({
+                        msg: '粘贴板无数据',
+                        duration: 2000,
+                        location: 'middle'
+                    });
+                }
+            }
+        });
+    }
+
+    function Submit() {
+        var searchval = $api.dom("#search-val");
+        var v = $api.val(searchval);
+        if (v != undefined && v != "" && v != 'undefined') {
+            BrowseLog('0', v);
+            var _url = 'https://ai.m.taobao.com/search.html?pid=' + GetMMID() + '&q=' + v + '&nowake=1';
+            OpenFramWin("taobaofanli", _url, "淘宝返利", {}, "../../html/frame/frame4.html")
+        };
+    }
+</script>
+</html>

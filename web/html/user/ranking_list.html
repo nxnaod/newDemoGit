@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>排行榜</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/product.css" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        body { }
+        .ranking-list { border-top: 1px solid #EBEBEB; }
+        .ranking-list li { height: 70px; line-height: 70px; border-bottom: 1px solid #EBEBEB; margin-left: -15px; margin-right: -15px; padding-left: 15px; padding-right: 15px; }
+        .paiming { display: block; width: 35px; float: left; text-align: center; }
+        .paiming img { width: 35px; height: auto; }
+        .icon { width: 65px; display: block; float: left; text-align: center; }
+        .icon img { width: 50px; height: auto; border-radius: 50%; border: 1px solid #ddd; }
+        .name { display: block; float: left; color: #969696; font-size: 16px; }
+        .jifen { float: right; font-size: 16px; color: #000000; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12">
+                <ul class="list-unstyled ranking-list"></ul>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/doT.min.js"></script>
+<script type="text/javascript" src="../../script/config.js"></script>
+<script type="text/javascript" src="../../script/wsw.js"></script>
+<script type="text/x-dot-template" id="rankinglist">
+    {{for(var i=0;i<it.length;i++){ }}
+    <li>
+        <span class="paiming">
+            {{if(i==0){ }}
+            <img src="../../image/user/ranking1.png" />
+             {{ }else if(i==1){ }}
+            <img src="../../image/user/ranking2.png" />
+             {{ }else if(i==2){ }}
+            <img src="../../image/user/ranking3.png" />
+            {{ }else{ }} 
+                   {{=i+1 }} 
+             {{ } }}
+        </span>
+        <span class="icon">
+            <img src="{{=GetDataUrl()+"/"+it[i].icon}}"/>
+        </span>
+        <span class="name">
+            {{=it[i].ddusername}}
+        </span>
+        <span class="jifen">
+            {{=it[i].jifen}}
+        </span>
+    </li>
+    {{ } }}
+</script>
+<script type="text/javascript">
+    apiready = function () {
+        api.setRefreshHeaderInfo({
+            visible: true,
+            bgColor: '#F4F4F4',
+            textColor: '#A2A2A2',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            showTime: true
+        }, function (ret, err) {
+            GetContent();
+            api.refreshHeaderLoadDone();
+        });
+        GetContent();
+    };
+
+    //获取数据
+    function GetContent() {
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '数据加载中...',
+            modal: true
+        });
+        api.ajax({
+            url: ApiUrl.GetRanking,
+            method: 'get',
+        }, function (ret, err) {
+            if (ret) {
+                if (ret.s == 1) {
+                    if (ret.r != null) {
+                        if (ret.r.length > 0) {
+                            var List = doT.template($api.text($api.dom("#rankinglist")));
+                            var rlist = List(ret.r);
+                            $api.html($api.dom('.ranking-list'), rlist);
+                            api.parseTapmode();
+                        }
+                    };
+                    api.hideProgress();
+                }
+            }
+            api.hideProgress();
+        });
+    }
+</script>
+</html>

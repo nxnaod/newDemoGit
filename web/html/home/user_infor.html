@@ -1,0 +1,368 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>用户中心</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link href="../../css/bootstrap.css" rel="stylesheet" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        body, html { background-color: #F0F0F0; }
+        .top { background: url('../../image/user/wd_bg.png'); display: block; height: 125px; width: 100%; background-size: 100% 100%; color: #fff; }
+        .top p { margin-bottom: 0; }
+        .top h4 { font-size: 16px; margin-top: 8px; }
+        .bb { border-bottom: 1px solid #FF8383; }
+        .my-money small { font-size: 22px; }
+        .my-money { font-size: 16px; line-height: 40px; height: 40px; margin-top: 10px; border-top: 1px solid #FF8383; }
+        .my-money img { position: absolute; right: 15px; height: 17px; width: auto; margin-top: 26px; }
+        .nomoney { font-size: 16px; height: 50px; line-height: 50px; }
+        .menu-list ul li { height: 50px; line-height: 50px; background-color: #ffffff; font-size: 16px; font-weight: 500; padding: 0 15px; }
+        .menu-list ul li .pull-right img { height: 15px; width: auto; }
+
+        .sqtx { background: #fff; border-bottom: 1px solid #EBEBEB; }
+        .sqtx p { margin-bottom: 5px; }
+        .sqtx img { width: 30px; height: 30px; margin-top: 5px; }
+        .sqtx .col-xs-6:first-child { border-right: 1px solid #EBEBEB; }
+
+        .bb2 { border-bottom: 1px solid #F0F0F0; }
+        .mt10 { margin-top: 10px; }
+
+        .cb { opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="media" style="margin-top:20px">
+                        <div class="media-left" onclick="OpenUserIfoSet()" tapmode="cb">
+                            <a href="javascript:;" style="display:block;width:55px;display:block" class="user-icon">
+                                <img class="media-object" src="" ; style="width:55px;height:55px;border-radius:50%" />
+                            </a>
+                        </div>
+                        <div class="media-body">
+                            <h4 class="media-heading user-name" onclick="OpenUserIfoSet()" tapmode="cb">
+                                会员名称
+                            </h4>
+                            <p onclick="LevelDescription()" tapmode="cb">
+                                会员等级：
+                                <span class="level">0</span>&nbsp;
+                                <img src="../../image/user/yiwen.png" style="height:15px;width:auto" /><small style="font-size:10px">等级说明</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 my-money" onclick="OpenShouZhiList()" tapmode="cb">
+                    <span class="pull-left">余额：￥<span class="balance">0</span></span>
+                    <span class="pull-right">集分宝：<span class="jfb">00</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sqtx">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-6 text-center" onclick="CashApply()" tapmode="cb">
+                    <img src="../../image/distribution/tixian.png" />
+                    <p>申请提现</p>
+                </div>
+                <div class="col-xs-6 text-center" onclick="Sign('签到有礼')" tapmode="cb">
+                    <img src="../../image/distribution/qiandao.png" />
+                    <p>签到有礼</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ad1">
+    </div>
+    <div class="menu-list">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12" style="padding-left:0;padding-right:0">
+                    <ul class="list-unstyled">
+                        <li class="bb2 mt10" onclick="OpenShouZhiList()" tapmode="cb">
+                            <span>
+                                <img src="../../image/user/jifen.png" style="height:25px;width:auto" />
+                            </span>&nbsp;&nbsp;
+                            <span>收支明细</span>
+                            <span class="pull-right">
+                                <img src="../../image/user/wd_tag_arrow_hui.png" />
+                            </span>
+                        </li>
+                        <li onclick="CashApply()" tapmode="cb">
+                            <span>
+                                <img src="../../image/user/tixian.png" style="height:25px;width:auto" />
+                            </span>&nbsp;&nbsp;
+                            <span>
+                                申请提现
+                            </span>
+                            <span class="pull-right">
+                                <img src="../../image/user/wd_tag_arrow_hui.png" />
+                            </span>
+                        </li>
+                        <li class="bb2 mt10" onclick="OpenOrderList()" tapmode="cb">
+                            <span>
+                                <img src="../../image/user/dingdan.png" style="height:25px;width:auto" />
+                            </span>&nbsp;&nbsp;
+                            <span>
+                                订单明细
+                            </span>
+                            <span class="pull-right">
+                                <img src="../../image/user/wd_tag_arrow_hui.png" />
+                            </span>
+                        </li>
+                        <li class="bb2" onclick="OpenTaoBaoList()" tapmode="cb">
+                            <span>
+                                <img src="../../image/user/taobaodingdan.png" style="height:25px;width:auto" />
+                            </span>&nbsp;&nbsp;
+                            <span>
+                                淘宝订单
+                            </span>
+                            <span class="pull-right">
+                                <img src="../../image/user/wd_tag_arrow_hui.png" />
+                            </span>
+                        </li>
+                        <li onclick="OpenTaoBaoCar()" tapmode="cb">
+                            <span>
+                                <img src="../../image/user/gouwuche.png" style="height:25px;width:auto" />
+                            </span>&nbsp;&nbsp;
+                            <span>
+                                淘宝购物车
+                            </span>
+                            <span class="pull-right">
+                                <img src="../../image/user/wd_tag_arrow_hui.png" />
+                            </span>
+                        </li>
+                        <li class="bb2 mt10" onclick="OpenInvite()" tapmode="cb">
+                            <span>
+                                <img src="../../image/user/yaoqing.png" style="height:25px;width:auto" />
+                            </span>&nbsp;&nbsp;
+                            <span>
+                                有奖邀请
+                            </span>
+                            <span class="pull-right">
+                                <img src="../../image/user/wd_tag_arrow_hui.png" />
+                            </span>
+                        </li>
+                        <li class="bb2" onclick="OpenHelp()" tapmode="cb">
+                            <span>
+                                <img src="../../image/user/kefu.png" style="height:25px;width:auto" />
+                            </span>&nbsp;&nbsp;
+                            <span>
+                                客服帮助
+                            </span>
+                            <span class="pull-right">
+                                <img src="../../image/user/wd_tag_arrow_hui.png" />
+                            </span>
+                        </li>
+                        <li class="bb2" onclick="OpenSetUp()" tapmode="cb">
+                            <span>
+                                <img src="../../image/user/shezhi.png" style="height:25px;width:auto" />
+                            </span>&nbsp;&nbsp;
+                            <span>
+                                设置
+                            </span>
+                            <span class="pull-right">
+                                <img src="../../image/user/wd_tag_arrow_hui.png" />
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    <p>您已用<span class="appname">返还购</span>省钱<span class="yitixian">00</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script src="../../script/config.js"></script>
+<script src="../../script/wsw.js"></script>
+<script type="text/javascript">
+    var init = false;
+    var alibaichuan = null;
+    var appname = $api.dom(".appname");
+    apiready = function () {
+        alibaichuan = api.require('alibaichuan');
+        //初始化百川
+        initSDK();
+        $api.text(appname, GetAppName());
+
+        GetContent();
+
+        var ad = $api.strToJson(localStorage.getItem("appwsw_wdad"));
+        var proad1 = $api.dom(".ad1");
+        if (ad.k == 1) {
+            if (ad.v.type == 1) {
+                $api.html(proad1, UnicodeToAscii(ad.v.content));
+            } else {
+                var _html = '<div style="display:block" onclick="AdOpenUrl(\'' + ad.v.title + '\',\'' + ad.v.link + '\')">\
+                                        <img src="' + GetDataUrl() + '/' + ad.v.img + '"  />\
+                                    </div>'
+                $api.html(proad1, _html);
+            };
+        };
+        //GetLog(api.frameName, api.winName);//输出日志
+    };
+
+    var user_icon = $api.dom(".user-icon img");//图标
+    var user_name = $api.dom(".user-name");//名称
+    var user_hydj = $api.dom(".level");//会员等级
+    var user_balance = $api.dom(".balance");//余额
+    var user_jfbr = $api.dom(".jfb");//集分宝
+    var user_yitixian = $api.dom(".yitixian");//已提现
+    //获取数据
+    function GetContent() {
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '数据加载中...',
+            modal: true
+        });
+        api.ajax({
+            url: ApiUrl.GetUserInfo,
+            method: 'get',
+        }, function (ret, err) {
+            if (ret) {
+                if (ret.s != 1) {
+                    api.alert({
+                        title: '登录状态失效',
+                        msg: ret.r,
+                    }, function (ret, err) {
+                        if (ret) {
+                            localStorage.removeItem('LoginState');  //移除登录状态
+                            Open_User_LogIn("", "GetContent();", "root", "user_infor");
+                        }
+                    });
+                } else {
+                    var icon = GetDataUrl() + "/" + ret.r.iconurl || "../../image/user/noavatar_big.jpg";
+                    var name = ret.r.name || "登录名";
+                    var balance = ret.r.money || "0";
+                    var jfbr = ret.r.jifenbao || "0";
+                    var hydj = ret.r.level || "0";
+                    var yitixian = ret.r.yitixian || "0";
+
+                    $api.attr(user_icon, "src", icon);
+                    $api.text(user_name, name);
+                    $api.text(user_balance, balance);
+                    $api.text(user_jfbr, jfbr);
+                    $api.text(user_hydj, hydj);
+                    $api.text(user_yitixian, yitixian);
+                }
+            } else {
+                api.toast({
+                    msg: '数据加载失败，请下拉刷新数据',
+                    duration: 5000,
+                    location: 'middle'
+                });
+            }
+            api.hideProgress();
+        });
+    };
+
+    //初始化百川
+    function initSDK() {
+        var param = {
+            isvcode: "feelinglife"
+        };
+        alibaichuan.initTaeSDK(param, function (ret, err) {
+            if (ret) {
+                if (ret.code == 0) {
+                    init = true;
+                }
+            } else {
+                //alert(JSON.stringify(err));
+            }
+        });
+    };
+
+    //打开淘宝订单
+    function OpenTaoBaoList() {
+        if (init) {
+            var param = {
+                status: 0,
+                isAllOrder: true,
+                nativeview: false
+            };
+            alibaichuan.myOrdersPage(param, function (ret, err) {
+            });
+        } else {
+            api.toast({
+                msg: '阿里百川初始化失败，请重试',
+                duration: 2000,
+                location: 'middle'
+            });
+        }
+    }
+    //打开淘宝购物车
+    function OpenTaoBaoCar() {
+        if (init) {
+            var param = {
+                isvcode: "feeling",
+                nativeview: false
+            };
+            alibaichuan.openMyCart(param, function (ret, err) {
+                //if (ret) {
+                //    alert("ret - " + JSON.stringify(ret));
+                //} else {
+                //    alert("err - " + JSON.stringify(err));
+                //}
+            });
+        } else {
+            api.toast({
+                msg: '阿里百川初始化失败，请重试',
+                duration: 2000,
+                location: 'middle'
+            });
+        }
+    }
+
+    //打开用户信息
+    function OpenUserIfoSet() {
+        OpenFramWin("user_infor_set", "../../html/user/user_infor_set.html", "个人信息", {}, "../../html/frame/frame3.html");
+    }
+
+    //等级说明
+    function LevelDescription() {
+        OpenFramWin("LevelDescription", "../../html/news/news_content.html", "等级说明", { "newID": 1004 }, "../../html/frame/frame3.html");
+    }
+
+    //收入明细
+    function OpenShouZhiList() {
+        OpenFramWin("user_infor_set", "../../html/user/shouzhi_list.html", "收支明细", {}, "../../html/frame/frame3.html");
+    };
+
+    //订单列表
+    function OpenOrderList() {
+        OpenFramWin("order_list", "../../html/user/order_list.html", "订单明细", {}, "../../html/frame/frame3.html");
+    };
+
+    //客服帮助
+    function OpenHelp() {
+        OpenFramWin("help", "../../html/user/help.html", "客服帮助", {}, "../../html/frame/frame3.html");
+    };
+
+    //设置
+    function OpenSetUp() {
+        OpenWinBounces("set_up_app", "../../html/user/set_up_app.html", {}, false);
+    }
+
+    //改变头像
+    function ChangeIcon(icon) {
+        if (icon != "" && icon != undefined && icon != 'undefined') {
+            api.imageCache({
+                url: icon
+            }, function (ret, err) {
+                var url = ret.url;
+                $api.attr($api.dom(".user-icon img"), "src", url);
+            });
+        };
+    };
+</script>
+</html>

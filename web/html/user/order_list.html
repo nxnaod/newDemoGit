@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>订单管理</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link href="../../css/bootstrap.css" rel="stylesheet" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        .top { height: 40px; line-height: 38px; font-size: 14px; color: #7d7d7d; border-bottom: 1px solid #DDDDDD; }
+        .top .active { color: #FF3444; border-bottom: 2px solid #FF3444; }
+        .top .col-xs-3 { padding: 0; }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-6 text-center tblist active" onclick="SwitchOrderList(0)" tapmode="cb">
+                    淘宝订单
+                </div>
+                <div class="col-xs-6 text-center sclist" onclick="SwitchOrderList(1)" tapmode="cb">
+                    商城订单
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="background-color:#FFF2CA;height:40px;line-height:40px;color:#FE5B27">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12 text-center" onclick="OpenAddOrder()" tapmode="cb">
+                    下单了，却没有记录？<sapn style="float:right">
+                        <img src="../../image/user/wd_tag_arrow_hui.png" style="height:14px;margin-top:-3px" />
+                    </sapn>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/config.js"></script>
+<script src="../../script/wsw.js"></script>
+<script type="text/javascript">
+    apiready = function () {
+        OpenFrameGroup();
+    };
+
+    function OpenFrameGroup() {
+        api.openFrameGroup({
+            name: 'orderlist',
+            rect: {
+                x: 0,
+                y: 132,
+                w: 'auto',
+                h: api.frameHeight - 80
+            },
+            index: 0,
+            preload: 0,
+            scrollEnabled: false,
+            frames: [{
+                name: 'order_list_tb',
+                url: '../../html/user/order_list_tb.html',
+                bgColor: '#F1EFF2'
+            }, {
+                name: 'order_list_sc',
+                url: '../../html/user/order_list_sc.html',
+                bgColor: '#F1EFF2'
+            }]
+        }, function (ret, err) {
+        });
+    };
+
+    //切换订单列表
+    function SwitchOrderList(tag) {
+        var _this = $('.top .col-xs-6').eq(tag);
+        if (_this.hasClass('active')) return;
+        $('.top .col-xs-6').removeClass('active');
+        _this.addClass('active');
+        SetGroupIndex(tag);
+    };
+
+
+    function SetGroupIndex(index) {
+        api.setFrameGroupIndex({
+            name: 'orderlist',
+            index: index,
+            reload: true,
+        });
+    };
+
+    function OpenAddOrder() {
+        OpenFramWin("add_order", "../../html/user/add_order.html", "认领淘宝订单", {});
+    };
+</script>
+</html>

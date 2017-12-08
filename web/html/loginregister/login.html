@@ -1,0 +1,486 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>登录</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link href="../../css/bootstrap.css" rel="stylesheet" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        .top { height: 50px; line-height: 50px; }
+        .top img { height: 20px; width: 20px; }
+
+        .quick-login h4 { font-size: 16px; margin-top: 20px; margin-bottom: 30px; color: #666666; }
+        .quick-login ul { margin-left: 0; }
+        .quick-login .login-item { padding-left: 13px; padding-right: 13px; }
+        .quick-login .login-item img { width: 50px; height: auto; }
+        .quick-login .login-item p { margin-top: 10px; font-size: 12px; }
+
+        .login-form .input-box { display: inline-table; width: 287px; position: relative; }
+        .login-input { display: table-row; width: 100%; height: 50px; line-height: 50px; padding: 0px 50px 0px 10px; font-size: 18px; color: #000; background-color: #ffffff; background-image: none; border: none; outline: 0; border-bottom: 1px solid #ddd; }
+        .login-input:focus { border-color: #C3C3C3; outline: 0; border-bottom: 1px solid #ddd; }
+        .login-input::-moz-placeholder { color: #C3C3C3; }
+        .login-input:-ms-input-placeholder { color: #C3C3C3; }
+        .login-input::-webkit-input-placeholder { color: #C3C3C3; }
+
+        .login-form i { z-index: 3; position: absolute; height: 50px; line-height: 50px; width: 50px; text-align: center; right: 0; top: 0; }
+        .login-form i img { width: 25px; height: auto; }
+
+        .login-bt { opacity: 0.5; width: 100%; height: 45px; display: block; line-height: 45px; color: #ffffff; background: #FF3C4C; font-size: 16px; border-radius: 5px; margin-top: 25px; }
+        .register, .forgotpassword { display: block; height: 45px; line-height: 45px; font-size: 12px; width: 50%; float: left; color: #666; }
+        .cb { opacity: 0.8; }
+        .display-n { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="top" onclick="api.closeWin();" tapmode="cb">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12">
+                    <img src="../../image/login/login_close_bg.png" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="quick-login">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12 text-center kjdl-title">
+                    <h4>快捷登录</h4>
+                </div>
+                <div class="col-xs-12 text-center" style="padding-left:0;padding-right:0">
+                    <ul class="list-inline">
+                        <li class="login-item weixinlogin" onclick="WeiXinLogin()" tapmode="cb">
+                            <img src="../../image/login/weixin_login.png" />
+                            <p>微信</p>
+                        </li>
+                        <li class="login-item qqlogin" onclick="QQLogin()" tapmode="cb">
+                            <img src="../../image/login/qq_login.png" />
+                            <p>QQ</p>
+                        </li>
+                        <li class="login-item taobaologin" onclick="TaoBaoLogin()" tapmode="cb">
+                            <img src="../../image/login/taobao_login.png" />
+                            <p>淘宝</p>
+                        </li>
+                        <li class="login-item weibologin" onclick="WeiBoLogin()" tapmode="cb">
+                            <img src="../../image/login/weibo_login.png" />
+                            <p>微博</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-xs-12 text-center">
+                    <span style="display:block;width:100%;margin:30px 0 40px 0;color:#cccccc;font-weight:bold">OR</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="login-form">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12  text-center">
+                    <div class="input-box">
+                        <input type="text" placeholder="手机号/用户名/邮箱" class="login-input user-name" oninput="NameLength()" />
+                        <i class="name-icon" onclick="DelName()" tapmode="cb">
+                            <img src="../../image/login/kb.png" />
+                        </i>
+                    </div>
+                </div>
+                <div class="col-xs-12 text-center">
+                    <div class="input-box">
+                        <input type="password" placeholder="请输入密码" class="login-input user-password" oninput="NPEmpty()" />
+                        <i class="password-icon" onclick="SeePassword()" tapmode="cb">
+                            <img src="../../image/login/login_mima_miss_new.png" />
+                        </i>
+                    </div>
+                </div>
+                <div class="col-xs-12 text-center">
+                    <div class="input-box">
+                        <span class="login-bt" onclick="SubmitLogin()" tapmode="cb">登录</span>
+                    </div>
+                </div>
+                <div class="col-xs-12 text-center">
+                    <div class="input-box">
+                        <span class="register text-left" onclick="GoRegister()" tapmode="cb">
+                            10秒快速注册
+                        </span>
+                        <span class="forgotpassword text-right" onclick="ForgotPassword()" tapmode="cb">
+                            忘记密码？
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script src="../../script/config.js"></script>
+<script src="../../script/wsw.js"></script>
+<script type="text/javascript">
+    var way;
+    var wayname;
+    var wayframeName;
+    var weiXin;
+    var qq;
+    var alibaichuan;
+    var sinaWeiBo;
+    var baichuaninit = false;
+    var wxinit = false;
+
+    var weixinTF, qqTF, weiboTF, taobaoTF;//登录开启判断
+    apiready = function () {
+        var frameParam = api["pageParam"];
+        way = frameParam["way"] || "";//获取方法名
+        wayname = frameParam["wayname"] || "";//获取方法name
+        wayframeName = frameParam["wayframeName"] || "";//获取frameName
+
+        //微信初始化
+        weiXin = api.require('wx');//微信
+
+        qq = api.require('qq');//QQ
+
+        alibaichuan = api.require('alibaichuan');//阿里百川
+        //阿里初始化
+        initSDK();
+
+        sinaWeiBo = api.require('sinaWeiBo');//微博
+
+        AppSetUp();
+        //GetLog(api.frameName, api.winName);//输出日志
+    };
+
+    //APP配置
+    function AppSetUp() {
+        var weixinTF = localStorage.getItem("appwsw_weixinlogin");//微信登录
+        var qqTF = localStorage.getItem("appwsw_taobaologin");//淘宝登录
+        var taobaoTF = localStorage.getItem("appwsw_qqlogin");//QQ登录
+        var weiboTF = localStorage.getItem("appwsw_weibologin");//微博登录
+        if (weixinTF == "0") {
+            $api.addCls($api.dom(".weixinlogin"), "display-n");
+        };
+        if (qqTF == "0") {
+            $api.addCls($api.dom(".qqlogin"), "display-n");
+        };
+        if (taobaoTF == "0") {
+            $api.addCls($api.dom(".taobaologin"), "display-n");
+        };
+        if (weiboTF == "0") {
+            $api.addCls($api.dom(".weibologin"), "display-n");
+        };
+        if (weixinTF == "0" && weiboTF == "0" && qqTF == "0" && taobaoTF == "0") {
+            $api.addCls($api.dom(".kjdl-title"), "display-n");
+        }
+    };
+
+    //初始化百川
+    function initSDK() {
+        var param = {
+            isvcode: "feelinglife"
+        };
+        alibaichuan.initTaeSDK(param, function (ret, err) {
+            if (ret) {
+                if (ret.code == 0) {
+                    baichuaninit = true;
+                }
+            } else {
+            }
+        });
+    }
+
+    var passwordicon = $api.dom(".password-icon img");
+    var inputpassword = $api.dom(".user-password");
+    //查看密码
+    function SeePassword() {
+        var password = $api.dom(".password-icon");
+        var t = $api.hasCls(password, 'active');
+        if (t) {
+            $api.removeCls(password, 'active');
+            $api.attr(passwordicon, 'src', '../../image/login/login_mima_miss_new.png');
+            $api.attr(inputpassword, 'type', 'password');
+        }
+        else {
+            $api.addCls(password, 'active');
+            $api.attr(passwordicon, 'src', '../../image/login/login_mima_show.png');
+            $api.attr(inputpassword, 'type', 'text');
+        }
+    };
+
+    var nameicon = $api.dom(".name-icon img");
+    var inputname = $api.dom(".user-name");
+    //删除name
+    function DelName() {
+        var name = $api.dom(".name-icon");
+        var t = $api.hasCls(name, 'active');
+        if (t) { }
+        else {
+            $api.addCls(name, 'active');
+            $api.attr(nameicon, 'src', '../../image/login/kb.png');
+            $api.val(inputname, '');
+            NPEmpty();
+        }
+    }
+
+    //判断name
+    function NameLength() {
+        if ($api.val(inputname) != "" || $api.val(inputname) != undefined) {
+            $api.removeCls($api.dom(".name-icon"), 'active');
+            $api.attr(nameicon, 'src', '../../image/login/edit_close.png');
+        } else {
+            $api.addCls($api.dom(".name-icon"), 'active');
+            $api.attr(nameicon, 'src', '../../image/login/kb.png');
+        };
+        NPEmpty();
+    }
+
+    var empty = false;
+    var loginbt = $api.dom(".login-bt");
+    //判断姓名和密码是否为空
+    function NPEmpty() {
+        var n = $api.val(inputname);
+        var p = $api.val(inputpassword);
+        if (n != "" && p != "" && n != undefined && p != undefined && n != "undefined" && p != "undefined") {
+            empty = true;
+            $api.css(loginbt, 'opacity:1;');
+        } else {
+            empty = false;
+            $api.css(loginbt, 'opacity:0.5;');
+        }
+    }
+
+    //提交
+    function SubmitLogin() {
+        if (empty) {
+            var n = $api.val(inputname);
+            var p = $api.val(inputpassword);
+            api.showProgress({
+                style: 'default',
+                animationType: 'fade',
+                title: '登录中...',
+                modal: true
+            });
+            api.ajax({
+                url: GetDataUrl() + '/appwsw/index.php?mod=user&act=login&username=' + n + '&password=' + p + '&sub=1',
+                method: 'get',
+            }, function (ret, err) {
+                if (ret) {
+                    if (ret.s == 1) {
+                        LoginSuccess();
+                    } else {
+                        api.toast({
+                            msg: ret.r,
+                            duration: 2000,
+                            location: 'middle'
+                        });
+                    }
+                } else {
+                    api.toast({
+                        msg: JSON.stringify(err),
+                        duration: 2000,
+                        location: 'middle'
+                    });
+                }
+                api.hideProgress();
+            });
+        }
+    }
+
+    //微信登录
+    function WeiXinLogin() {
+        weiXin.auth({}, function (ret, err) {
+            if (ret.status) {
+                var code = ret.code;
+                weiXin.getToken({
+                    code: code
+                }, function (ret, err) {
+                    if (ret.status) {
+                        var _openId = ret.openId;
+                        var _accessToken = ret.accessToken;
+                        var _dynamicToken = ret.dynamicToken;
+                        weiXin.getUserInfo({
+                            accessToken: _accessToken,
+                            openId: _openId
+                        }, function (ret, err) {
+                            if (ret.status) {
+                                SubmitQuickLogin("wx", _openId, ret.headimgurl, ret.nickname);
+                            } else {
+                                api.toast({
+                                    msg: "登录失败，请重新登录。err:" + err.code,
+                                    duration: 2000,
+                                    location: 'middle'
+                                });
+                            };
+                        });
+                    } else {
+                        api.toast({
+                            msg: "登录失败，请重新登录。err:" + err.code,
+                            duration: 2000,
+                            location: 'middle'
+                        });
+                    }
+                });
+            } else {
+                api.toast({
+                    msg: "登录失败，请重新登录。err:" + err.code,
+                    duration: 2000,
+                    location: 'middle'
+                });
+            }
+        });
+    };
+    //QQ登录
+    function QQLogin() {
+        qq.login(function (ret, err) {
+            if (ret) {
+                var openId = ret.openId;
+                if (openId != "" && openId != undefined && openId != 'undefined') {
+                    qq.getUserInfo(function (ret, err) {
+                        if (ret.status) {
+                            var icon = ret.info.figureurl_qq_2;
+                            var nick = ret.info.nickname;
+                            SubmitQuickLogin("qq", openId, icon, nick);
+                        } else {
+                            api.toast({
+                                msg: "登录失败，请重新登录",
+                                duration: 2000,
+                                location: 'middle'
+                            });
+                        }
+                    });
+                }
+            } else {
+                api.toast({
+                    msg: "登录失败，请重新登录",
+                    duration: 2000,
+                    location: 'middle'
+                });
+            }
+        });
+    }
+    //淘宝登录
+    function TaoBaoLogin() {
+        if (baichuaninit) {
+            alibaichuan.showLogin(function (ret, err) {
+                if (ret) {
+                    if (ret.isLogin == true) {
+                        SubmitQuickLogin("tb", ret.userId, ret.avatarUrl, ret.userNick);
+                    }
+                } else {
+                    api.toast({
+                        msg: "登录失败，请重新登录",
+                        duration: 2000,
+                        location: 'middle'
+                    });
+                }
+            });
+        };
+    };
+    //微博登录
+    function WeiBoLogin() {
+        sinaWeiBo.auth(function (ret, err) {
+            if (ret.status) {
+                var openId = ret.userID;
+                if (openId != "" && openId != undefined && openId != 'undefined') {
+                    sinaWeiBo.getUserInfo(function (ret, err) {
+                        if (ret.status) {
+                            SubmitQuickLogin("wb", openId, ret.userInfo.profile_image_url, ret.userInfo.screen_name);
+                        } else {
+                            api.toast({
+                                msg: "登录失败，请重新登录" + err.msg,
+                                duration: 2000,
+                                location: 'middle'
+                            });
+                        };
+                    });
+                };
+            } else {
+                api.toast({
+                    msg: "登录失败，请重新登录",
+                    duration: 2000,
+                    location: 'middle'
+                });
+            }
+        });
+    }
+
+    //快捷登录请求
+    function SubmitQuickLogin(logintype, openid, icon, nick) {
+        if (openid != "" && openid != undefined && openid != 'undefined') {
+            api.showProgress({
+                style: 'default',
+                animationType: 'fade',
+                title: '登录中...',
+                modal: true
+            });
+            var _url = GetDataUrl() + '/appwsw/index.php?mod=user&act=autoral&logintype=' + logintype + '&openid=' + openid + '&icon=' + escape(icon) + '&nick=' + escape(nick);
+            //alert(_url);
+            // $api.val($api.dom(".user-name"), _url);
+            api.ajax({
+                url: _url,
+                method: 'get',
+            }, function (ret, err) {
+                if (ret) {
+                    if (ret.s == 1) {
+                        LoginSuccess();
+                    } else {
+                        api.toast({
+                            msg: ret.r,
+                            duration: 5000,
+                            location: 'middle'
+                        });
+                    }
+                } else {
+                    api.toast({
+                        msg: JSON.stringify(err),
+                        duration: 5000,
+                        location: 'middle'
+                    });
+                }
+                api.hideProgress();
+            });
+        }
+    };
+
+    function LoginSuccess() {
+        localStorage.setItem('LoginState', true);
+        if (way != "") {
+            if (wayframeName != "" && wayname != "") {
+                api.execScript({
+                    name: wayname,
+                    frameName: wayframeName,
+                    script: way
+                });
+            };
+            if (wayframeName == "") {
+                if (wayname != "") {
+                    api.execScript({
+                        name: wayname,
+                        script: way
+                    });
+                };
+            };
+        } else {
+            api.execScript({
+                name: 'root',
+                script: 'HomeMenuSwitch(4);'
+            });
+        };
+        setInterval("closeWin()", 500);
+    };
+
+    function closeWin() {
+        api.closeWin();
+    }
+
+    //注册
+    function GoRegister() {
+        OpenFramWin("register", "../../html/loginregister/register.html", "请输入手机号", {}, "../../html/frame/frame3.html");
+    }
+
+    //
+    function ForgotPassword() {
+        OpenFramWin("forgot_password", "../../html/loginregister/forgot_password.html", "账号验证", {}, "../../html/frame/frame3.html");
+    }
+</script>
+</html>

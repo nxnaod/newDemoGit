@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>无优惠券弹出</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.css" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        .frame-top { background-color: #fff; border-bottom: 1px solid #ddd; }
+        .frame-top .menu-name { color: #000; font-size: 18px; height: 45px; line-height: 45px; }
+        .frame-top .menu-name a { position: absolute; display: block; height: 50px; width: 50px; text-align: left; }
+        .cb { opacity: 0.8; }
+        .frame-top .menu-name a:last-child { width: 100px; text-decoration: none; color: #575757; font-size: 16px; }
+        .frame-top .menu-name a:last-child:focus { text-decoration: none; }
+        .btbox { display: inline-block; width: 80%; text-align: left; }
+        .bt { border: 1px solid #FF3444; display: inline-block; height: 45px; text-align: left; line-height: 45px; border-radius: 45px; padding: 0 30px; color: #FF3444; font-size: 18px; margin-bottom: 30px; width: 0%; overflow: hidden; }
+        .bt span { float: right; }
+        .bt1 { -webkit-transition: all .3s ease-in 0s; -moz-transition: all .3s ease-in 0s; -ms-transition: all .3s ease-in 0s; -o-transition: all .3s ease-in 0s; transition:all .3s ease-in 0s; }
+        .bt2 { -webkit-transition: all .3s ease-in .3s; -moz-transition: all .3s ease-in .3s; -ms-transition:all .3s ease-in .3s; -o-transition:all .3s ease-in .3s; transition:all .3s ease-in .3s; }
+        .bt3 { -webkit-transition: all .3s ease-in .6s; -moz-transition:  all .3s ease-in .6s; -ms-transition:  all .3s ease-in .6s; -o-transition:  all .3s ease-in .6s; transition:  all .3s ease-in .6s; }
+        .bt1.active { width: 100%; }
+        .bt2.active { width: 100%; }
+        .bt3.active { width: 100%; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid frame-top" id="frame-top">
+        <div class="row">
+            <div class="col-xs-12 text-center menu-name">
+                <a onclick="api.closeWin();" tapmode="cb">
+                    <img src="../../image/return.png" style="height: 20px;margin-top: -5px;" />
+                </a>
+                <span id="title"></span>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12 text-center" style="margin:30px 0">
+                <h4>即将进入&nbsp;<span class="laiyuantype" style="color:#FF6448;font-weight:bold;font-size:20px"></span></h4>
+            </div>
+            <div class="col-xs-12 text-center">
+                <div class="btbox">
+                    <span class="bt bt1">
+                        先付款<span class="xfk"></span>
+                    </span>
+                </div>
+            </div>
+            <div class="col-xs-12 text-center">
+                <div class="btbox">
+                    <span class="bt bt2" style="color:#fff;background-color:#FF3444">
+                        购买后<span class="fh"></span>
+                    </span>
+                </div>
+            </div>
+            <div class="col-xs-12 text-center">
+                <div class="btbox">
+                    <span class="bt bt3">
+                        返后价<span class="fhj"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script src="../../script/config.js"></script>
+<script src="../../script/wsw.js"></script>
+<script type="text/javascript">
+    var url = "";
+    var laiyuan_type = "";
+    var laiyuan_name = "";
+    var price_jian = "";
+    var discount_price = "";
+    var fanli_je = "";
+    var laiyuan = "淘宝";
+    var baichuaninit = false;
+    var alibaichuan;
+    var pro_id = "";
+    var win_name="";
+    var fram_name="";
+    apiready = function () {
+        $api.addCls($api.dom(".bt1"), "active");
+        $api.addCls($api.dom(".bt2"), "active");
+        $api.addCls($api.dom(".bt3"), "active");
+
+        var frameParam = api["pageParam"];
+        url = frameParam["url"];
+        laiyuan_type = frameParam["laiyuan_type"];
+        laiyuan_name = frameParam["laiyuan_name"];
+        price_jian = frameParam["price_jian"];
+        discount_price = frameParam["discount_price"];
+        fanli_je = frameParam["fanli_je"];
+        pro_id = frameParam["pro_id"];
+        win_name=frameParam["win_name"];
+        fram_name = frameParam["fram_name"];
+        ///_url：优惠券链接，_goto：购买链接，laiyuan_type：来源类型，
+        //price_jian：优惠金额，discount_price：实际价格，fanli_je：返利金额
+        //laiyuan_type=1是淘宝，laiyuan_type=2是天猫，laiyuan_type=3是京东等第三方，laiyuan_type=4是拍拍
+        $api.text($api.dom(".xfk"),"￥"+ discount_price);
+        $api.text($api.dom(".fh"), "￥" + fanli_je);
+        $api.text($api.dom(".fhj"), "￥" + (parseFloat(discount_price) - parseFloat(fanli_je)).toFixed(2));
+
+        laiyuan = laiyuan_name;
+        if (laiyuan_type == 1)
+        {
+            laiyuan = "淘宝";
+        } else if (laiyuan_type == 2) {
+            laiyuan = "天猫";
+        } else {
+            laiyuan = laiyuan_name;
+        }
+        $api.text($api.dom(".laiyuantype"), laiyuan);
+
+        //初始化百川
+        alibaichuan = api.require('alibaichuan');
+        //初始化百川
+        initSDK();
+        setTimeout('OpenProductDetails("' + laiyuan_type + '","' + url + '","' + laiyuan + '","' + pro_id + '")', 1800);
+    };
+    //初始化百川
+    function initSDK() {
+        var param = {
+            isvcode: "App"
+        };
+        alibaichuan.initTaeSDK(param, function (ret, err) {
+            if (ret) {
+                if (ret.code == 0) {
+                    baichuaninit = true;
+                }
+            };
+        });
+    };
+
+    function OpenProductDetails(laiyuan_type, url, laiyuan_name, pro_id) {
+        var jsfun = 'OpenNoProductDetails("' + laiyuan_type + '", "' + url + '", "' + laiyuan_name + '", "' + pro_id + '");';
+        api.execScript({
+            name: win_name,
+            frameName: fram_name,
+            script: jsfun
+        });
+        setTimeout('api.closeWin();', 500);
+    };
+</script>
+</html>

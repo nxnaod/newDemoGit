@@ -1,0 +1,298 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>用户信息设置</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link href="../../css/bootstrap.css" rel="stylesheet" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        html, body { background-color: #F0F0F0; }
+
+        .user-info-list { margin-top: 10px; margin-left: -15px; margin-right: -15px; border-top: 1px solid #ddd; }
+        .user-info-list li { height: 50px; background-color: #ffffff; padding: 0 10px; line-height: 50px; border-bottom: 1px solid #ddd; }
+        .user-info-list li .user-icon img { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid #CCC8FF; }
+        .user-info-list .pull-left { font-size: 15px; color: #000; }
+        .user-info-list .pull-right { font-size: 14px; color: #999; }
+        .user-info-list li .right-icon img { height: 14px; width: auto; padding: 0 5px; margin-top: -2px; }
+        .cb { opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12">
+                <ul class="list-unstyled user-info-list">
+                    <li onclick="SetUpIcon()" tapmode="cb">
+                        <span class="pull-left">
+                            头像
+                        </span>
+                        <span class="pull-right user-icon">
+                            <img src=""/>
+                        </span>
+                    </li>
+                    <li>
+                        <span class="pull-left ">
+                            用户名
+                        </span>
+                        <span class="pull-right user-name">
+                            qq472834723478
+                        </span>
+                    </li>
+                    <li onclick="SetUpMobile()" tapmode="cb">
+                        <span class="pull-left ">
+                            手机号
+                        </span>
+                        <span class="pull-right right-icon">
+                            <img src="../../image/user/wd_tag_arrow_hui.png" />
+                        </span>
+                        <span class="pull-right user-mobile">
+                            13697819396
+                        </span>
+                    </li>
+                    <li onclick="SetUpQq()" tapmode="cb">
+                        <span class="pull-left ">
+                            QQ号码
+                        </span>
+                        <span class="pull-right right-icon">
+                            <img src="../../image/user/wd_tag_arrow_hui.png" />
+                        </span>
+                        <span class="pull-right user-qq">
+                            530196020
+                        </span>
+                    </li>
+                    <li onclick="SetUpEmail()" tapmode="cb">
+                        <span class="pull-left ">
+                            电子邮箱
+                        </span>
+                        <span class="pull-right right-icon">
+                            <img src="../../image/user/wd_tag_arrow_hui.png" />
+                        </span>
+                        <span class="pull-right user-email">
+                            530196020@qq.com
+                        </span>
+                    </li>
+                    <li onclick="SetUpTB()" tapmode="cb">
+                        <span class="pull-left ">
+                            淘宝账号
+                        </span>
+                        <span class="pull-right right-icon">
+                            <img src="../../image/user/wd_tag_arrow_hui.png" />
+                        </span>
+                        <span class="pull-right user-tb">
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/config.js"></script>
+<script type="text/javascript" src="../../script/wsw.js"></script>
+<script type="text/javascript">
+    apiready = function () {
+        api.setRefreshHeaderInfo({
+            visible: true,
+            bgColor: '#F4F4F4',
+            textColor: '#A2A2A2',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            showTime: true
+        }, function (ret, err) {
+            GetContent();
+            api.refreshHeaderLoadDone();
+        });
+        GetContent();
+    };
+
+    var user_icon = $api.dom(".user-icon img");//图标
+    var user_name = $api.dom(".user-name");//名称
+    var user_mobile = $api.dom(".user-mobile");//手机号
+    var user_qq = $api.dom(".user-qq");//qq
+    var user_tb = $api.dom(".user-tb");//淘宝
+    var user_email = $api.dom(".user-email");//淘宝
+    var tbnumber = "";//淘宝
+    //获取数据
+    function GetContent() {
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '数据加载中...',
+            modal: true
+        });
+        api.ajax({
+            url: ApiUrl.GetUserInfo,
+            method: 'get',
+        }, function (ret, err) {
+            if (ret) {
+                if (ret.s != 1) {
+                    api.alert({
+                        title: '提示',
+                        msg: ret.r,
+                    }, function (ret, err) {
+                        if (ret) {
+                            localStorage.removeItem('LoginState');  //移除登录状态
+                            Open_User_LogIn("", 'GetContent();', "root", "distribution_content");
+                        }
+                    });
+                } else if (ret.s == 1) {
+
+                    var icon = GetDataUrl() + "/" + ret.r.iconurl || "../../image/user/noavatar_big.jpg";
+                    var name = ret.r.name || "登录名";
+                    var mobile = ret.r.mobile || "未设置";
+                    var qq = ret.r.qq || "未设置";
+                    var tb = ret.r.tbnick || "未设置";
+                    var email = ret.r.email || "未设置";
+
+                    $api.attr(user_icon, "src", icon);
+                    $api.text(user_name, name);
+                    $api.text(user_mobile, mobile);
+                    $api.text(user_qq, qq);
+                    //$api.text(user_tb, tb);
+                    tbnumber = tb;
+                    $api.text(user_email, email);
+                };
+            } else {
+                api.toast({
+                    msg: '数据加载失败，请下拉刷新数据',
+                    duration: 5000,
+                    location: 'middle'
+                });
+            }
+            api.hideProgress();
+        });
+    }
+
+    //设置头像
+    function SetUpIcon() {
+        api.actionSheet({
+            cancelTitle: '取消',
+            buttons: ['立即拍照', '从图库中选择'],
+        }, function (ret, err) {
+            if (ret.buttonIndex == 1) {
+                api.getPicture({
+                    sourceType: 'camera',
+                    encodingType: 'jpg',
+                    mediaValue: 'pic',
+                    destinationType: 'url',
+                    allowEdit: true,
+                    quality: 100,
+                    targetWidth: 500,
+                    targetHeight: 500,
+                    saveToPhotoAlbum: false
+                }, function (ret, err) {
+                    if (ret) {
+                        var myicon = ret.data;
+                        $api.attr(user_icon, "src", myicon);
+                        PostIcon(myicon);
+                    } else {
+                        api.toast({
+                            msg: err.msg,
+                            duration: 5000,
+                            location: 'middle'
+                        });
+                    }
+                });
+            } else if (ret.buttonIndex == 2) {
+                api.getPicture({
+                    sourceType: 'library',
+                    encodingType: 'jpg',
+                    mediaValue: 'pic',
+                    destinationType: 'url',
+                    allowEdit: true,
+                    quality: 100,
+                    targetWidth: 500,
+                    targetHeight: 500,
+                    saveToPhotoAlbum: false
+                }, function (ret, err) {
+                    if (ret) {
+                        var myicon = ret.data;
+                        $api.attr(user_icon, "src", myicon);
+                        PostIcon(myicon);
+                    } else {
+                        api.toast({
+                            msg: err.msg,
+                            duration: 5000,
+                            location: 'middle'
+                        });
+                    }
+                });
+            }
+        });
+    };
+
+    //提交头像
+    function PostIcon(iconUrl) {
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '头像提交中...',
+            modal: true
+        });
+        api.ajax({
+            url: ApiUrl.GetUserIcon,
+            method: 'post',
+            data: {
+                files: {
+                    file: iconUrl
+                }
+            }
+        }, function (ret, err) {
+            if (ret) {
+                if (ret.s == 1) {
+                    api.execScript({
+                        name: 'root',
+                        frameName: 'user_infor',
+                        script: 'ChangeIcon("'+GetDataUrl()+ret.r+'");',
+                    });
+                    api.execScript({
+                        name: 'root',
+                        frameName: 'distribution_content',
+                        script: 'ChangeIcon("' + GetDataUrl() + ret.r + '");',
+                    });
+                } else {
+                    api.alert({
+                        title: '提示',
+                        msg: '网络错误，头像上传失败',
+                    });
+                }
+            }
+            api.hideProgress();
+        });
+    }
+
+    //设置手机
+    function SetUpMobile() {
+        var n = $api.text(user_mobile);
+        if (n == "未设置") {
+            n = "";
+        }
+        OpenWinBounces("set_up_mobile", "../../html/user/set_up_mobile.html", { "mobile": n }, false)
+    }
+    //设置QQ
+    function SetUpQq() {
+        var n = $api.text(user_qq);
+        if (n == "未设置") {
+            n = "";
+        }
+        OpenWinBounces("set_up_qq", "../../html/user/set_up_qq.html", { "qq": n }, false)
+    }
+    //设置email
+    function SetUpEmail() {
+        var n = $api.text(user_email);
+        if (n == "未设置") {
+            n = "";
+        }
+        OpenWinBounces("set_up_email", "../../html/user/set_up_email.html", { "email": n }, false)
+    }
+    //设置淘宝
+    function SetUpTB() {
+        var n = tbnumber;
+        OpenWinBounces("set_up_tb", "../../html/user/set_up_tb.html", { "tbnick": n }, false)
+    }
+</script>
+</html>

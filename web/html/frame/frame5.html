@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>窗口样式-全网秒杀</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.css" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        .frame-top { background-color: #fff; border-bottom: 1px solid #ddd; }
+        .frame-top .menu-name { color: #000; font-size: 18px; height: 50px; line-height: 50px; }
+        .frame-top .menu-name a { position: absolute; display: block; height: 50px; width: 50px; text-align: left; }
+        .cb { opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid frame-top" id="frame-top">
+        <div class="row">
+            <div class="col-xs-12 text-center menu-name">
+                <a onclick="api.closeWin();" tapmode="cb">
+                    <img src="../../image/return.png" style="height: 20px;margin-top: -5px;" />
+                </a>
+                <span id="title" style="display:block;height:50px">
+                    <img src="../../image/product/miaosha.png" style="height:50%" />
+                </span>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/config.js"></script>
+<script type="text/javascript" src="../../script/wsw.js"></script>
+<script type="text/javascript">
+    apiready = function () {
+        /* 根据当前模块分类动态改变标题. */
+        var frameParam = api["pageParam"];
+        var frameUrl = frameParam["frameUrl"];
+        //初始化菜单
+        InitialMenu();
+    };
+    var hoemnav;
+    var navitems = 10;//分类个数
+    var hoemnavItem = [];
+    var homenavID = {};
+    //初始化菜单
+    function InitialMenu() {
+        hoemnav = api.require('NVNavigationBar');
+        api.ajax({
+            url: ApiUrl.GetSeckillType,
+            method: 'get',
+            dataType: 'json',
+            cache: true,
+        }, function (ret, err) {
+            if (ret) {
+                if (ret.s == 1) {
+                    var goods_type = ret.r.goods_type;
+                    navitems = ret.r.goods_type.length;
+                    for (var i in goods_type) {
+                        hoemnavItem.push({
+                            title: goods_type[i].title,
+                            bg: "widget://image/menubg1.png",
+                            bgSelected: "widget://image/menubg.png",
+                        });
+                        var n = parseInt(i);
+                        homenavID[n] = goods_type[i].id;
+                    }
+                    OpenNav(hoemnavItem);
+                }
+            } else {
+            }
+        });
+    };
+    function OpenNav(_item) {
+        hoemnav.open({
+            rect: {
+                x: 0,
+                y: 50,
+                w: api.frameWidth,
+                h: 40
+            },
+            styles: {
+                orientation: 'horizontal',
+                bg: "widget://image/menubg1.png",
+                bgAlpha: 1,
+                font: {
+                    size: 14,
+                    sizeSelected: 14,
+                    color: '#333333',
+                    colorSelected: '#FF3444',
+                    alpha: 1,
+                },
+                itemSize: {
+                    w: 72,
+                    h: 40
+                }
+            },
+            items: _item,
+            selectedIndex: 0,
+            fixedOn: api.frameName,
+            id: 'miaosha'
+        }, function (ret, err) {
+            if (ret) {
+                var n = ret.index;
+                if (n == 0 || n == undefined || n == "undefined") {
+                    n = 0;
+                };
+                OpenFrame("miaosha" + n, "../../html/product/product_miaosha.html", { "menuindex": n, "cid": homenavID[n] });
+            } else {
+                alert("请检查您的网络，重启应用");
+            }
+        });
+    };
+
+    //菜单切换
+    function TypeMenuChange(index) {
+        if (navitems > index && index >= 0) {
+            hoemnav.setSelected({
+                id: 'miaosha',
+                index: index,
+                selected: true
+            }, function (ret) {
+                if (ret.status) {
+                    OpenFrame("miaosha" + index, "../../html/product/product_miaosha.html", { "menuindex": index, "cid": homenavID[index] });
+                };
+            });
+        }
+    };
+
+    //打开窗口
+    function OpenFrame(frameName, frameUrl, frameParam) {
+        api.openFrame({
+            name: frameName,
+            url: frameUrl,
+            bounces: true,
+            bgColor: "#DFDEDE",
+            rect: {
+                x: 0,
+                y: 91,
+                w: 'auto',
+                h: api.frameHeight - 91
+            },
+            pageParam: frameParam,
+        });
+    };
+
+</script>
+</html>

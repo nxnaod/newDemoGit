@@ -1,0 +1,312 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>app设置</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link href="../../css/bootstrap.css" rel="stylesheet" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        body, html { background-color: #F0F0F0; }
+
+        .frame-top { background-color: #fff; border-bottom: 1px solid #ddd; }
+        .frame-top .menu-name { color: #000; font-size: 18px; height: 50px; line-height: 50px; }
+        .frame-top .menu-name a { position: absolute; display: block; height: 50px; width: 50px; text-align: left; }
+        .cb { opacity: 0.8; }
+
+        .bb { border-bottom: 1px solid #FF8383; }
+        .my-money small { font-size: 22px; }
+        .my-money { font-size: 16px; line-height: 40px; height: 40px; margin-top: 10px; border-top: 1px solid #FF8383; }
+        .my-money img { position: absolute; right: 15px; height: 17px; width: auto; margin-top: 26px; }
+        .nomoney { font-size: 16px; height: 50px; line-height: 50px; }
+        .menu-list ul li { height: 50px; line-height: 50px; background-color: #ffffff; font-size: 16px; font-weight: 500; padding: 0 15px; }
+        .menu-list ul li .pull-right img { height: 15px; width: auto; }
+        .bb2 { border-bottom: 1px solid #F0F0F0; }
+        .mt10 { margin-top: 10px; }
+        .login-out { display: block; width: 100%; height: 50px; line-height: 50px; text-align: center; font-size: 16px; background: #fff; border-top: 1px solid #ddd; border-bottom: 1px solid #ddd; }
+        .bbgx { font-size: 12px; color: #ffffff; background-color: #ff0000; border-radius: 10px; padding: 0 8px; height: 20px; line-height: 20px; }
+        .display-n { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid frame-top" id="frame-top">
+        <div class="row">
+            <div class="col-xs-12 text-center menu-name">
+                <a onclick="api.closeWin();" tapmode="cb">
+                    <img src="../../image/return.png" style="height: 20px;margin-top: -5px;" />
+                </a>
+                <span id="title">设置</span>
+            </div>
+        </div>
+    </div>
+    <div class="menu-list">
+        <div class="container-fluid">
+            <div class="row">
+                <ul class="list-unstyled">
+                    <li class="bb2 mt10" onclick="OpenUserIfoSet()" tapmode="cb">
+                        <span>个人信息</span>
+                        <span class="pull-right">
+                            <img src="../../image/user/wd_tag_arrow_hui.png" />
+                        </span>
+                    </li>
+                    <li class="bb2 mt10" onclick="SetPush()" tapmode="cb">
+                        <span>
+                            开启消息推送
+                        </span>
+                        <span class="pull-right">
+                            <img src="../../image/user/push_kaiqi.png" class="push-img" style="height:24px!important;margin-top:-3px" />
+                        </span>
+                    </li>
+                    <li onclick="ClearCache()" tapmode="cb">
+                        <span>
+                            清除缓存
+                        </span>
+                        <span class="pull-right">
+                            <span class="cache-size" style="color:#999">00</span>
+                        </span>
+                    </li>
+                    <li class="bb2 mt10 bbgx" onclick="CheckUpdate()" tapmode="cb">
+                        <span>
+                            检查更新
+                        </span>
+                        <span class="pull-right">
+                            <span class="bbgx display-n">有新版本</span>  <img src="../../image/user/wd_tag_arrow_hui.png" />
+                        </span>
+                    </li>
+                    <li onclick="AboutUs()" tapmode="cb">
+                        <span>
+                            关于<span class="app-name"></span>
+                        </span>
+                        <span class="pull-right">
+                            <span class="bbh" style="color:#999;font-size:14px"></span>  <img src="../../image/user/wd_tag_arrow_hui.png" />
+                        </span>
+                    </li>
+                </ul>
+            </div>
+            <div class="row">
+                <span class="login-out" onclick="LoginOut()">退出当前账号</span>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script src="../../script/config.js"></script>
+<script src="../../script/wsw.js"></script>
+<script type="text/javascript">
+    var appname = $api.dom(".app-name");
+    var mam;
+    var appVersion;
+    var bbh = $api.dom(".bbh");
+    var bbgx = $api.dom(".bbgx");
+    var updataUrl;
+    var systemType;
+
+    apiready = function () {
+        $api.text(appname, GetAppName());
+        //缓存
+        getCacheSize();
+        //mam初始化
+        mam = api.require('mam');
+        //版本号
+        appVersion = api.appVersion; // 比如： 1.0.0
+        $api.text(bbh, "V" + appVersion);
+        //检测更新
+        mam.checkUpdate(function (ret, err) {
+            if (ret) {
+                if (ret.status) {
+                    if (ret.result.update) {
+                        $api.removeCls(bbgx, "display-n");
+                    }
+                }
+            };
+        });
+
+        //系统类型
+        systemType = api.systemType;
+        if (systemType == 'ios') {
+            $api.addCls($api.dom(".bbgx"), "display-n");
+        }
+
+        var tfpush = localStorage.getItem("Push");
+        if (tfpush == "false")
+        {
+            $api.addCls(pushimg, "active");
+            $api.attr(pushimg, "src", "../../image/user/push_guanbi.png");
+            Push();
+        } else
+        {
+            $api.removeCls(pushimg, "active");
+            $api.attr(pushimg, "src", "../../image/user/push_kaiqi.png");
+        }
+    };
+
+    //打开用户信息
+    function OpenUserIfoSet() {
+        OpenFramWin("user_infor_set", "../../html/user/user_infor_set.html", "个人信息", {}, "../../html/frame/frame3.html");
+    }
+
+    //关于我们
+    function AboutUs() {
+        OpenWinBounces("about_us", "../../html/user/about_us.html", {}, false)
+    }
+
+    //检测更新
+    function CheckUpdate() {
+        mam.checkUpdate(function (ret, err) {
+            if (ret) {
+                if (ret.status) {
+                    if (ret.result.update) {
+                        $api.removeCls(bbgx, "display-n");
+                        updataUrl = ret.result.source;
+                        if (systemType == 'ios') {
+                            OpenWebView("更新提示", ret.result.updateTip, ret.result.version, "取消更新", "前往AppStore更新");
+                        } else if (systemType == 'android') {
+                            OpenWebView("更新提示", ret.result.updateTip, ret.result.version, "取消更新", "立即更新");
+                        }
+                    } else {
+                        api.toast({
+                            msg: '您已是最新版本~',
+                            duration: 5000,
+                            location: 'middle'
+                        });
+                    }
+                }
+            };
+        });
+    }
+
+    function OpenWebView(_title, _content, _version, _leftBtnTitle, _rightBtnTitle) {
+        var c = "";
+        if (_content != "") {
+            c = "已有新本版：" + _version + "\r\n" + _content
+        } else {
+            c = "已有新本版：" + _version + "\r\n暂无更新说明";
+        };
+        var dialogBox = api.require('dialogBox');
+        dialogBox.alert({
+            texts: {
+                title: _title,
+                content: c,
+                leftBtnTitle: _leftBtnTitle,
+                rightBtnTitle: _rightBtnTitle
+            },
+            styles: {
+                bg: '#fff',
+                w: 300,
+                title: {
+                    marginT: 10,
+                    titleSize: 16,
+                    titleColor: '#66A0CE'
+                },
+                content: {
+                    color: '#000',
+                    size: 14
+                },
+                left: {
+                    marginB: 7,
+                    marginL: 20,
+                    w: 130,
+                    h: 35,
+                    corner: 2,
+                    bg: '#FD4E3E',
+                    color: '#ffffff',
+                    size: 12
+                },
+                right: {
+                    marginB: 7,
+                    marginL: 10,
+                    w: 130,
+                    h: 35,
+                    corner: 2,
+                    bg: '#68A5E1',
+                    color: '#ffffff',
+                    size: 12
+                }
+            }
+        }, function (ret) {
+            if (ret.eventType == 'right') {
+                if (systemType == 'ios') {
+                    api.installApp({
+                        appUri: updataUrl
+                    });
+                };
+                if (systemType == 'android') {
+                    api.download({
+                        url: updataUrl,
+                        report: true
+                    }, function (ret, err) {
+                        if (ret && 0 == ret.state) {/* 下载进度 */
+                            api.toast({
+                                msg: "正在下载应用" + ret.percent + "%",
+                                duration: 1000,
+                                global: false
+                            });
+                        }
+                        if (ret && 1 == ret.state) {/* 下载完成 */
+                            var savePath = ret.savePath;
+                            api.installApp({
+                                appUri: savePath
+                            });
+                        }
+                    });
+                };
+
+            };
+            if (ret.eventType == 'left') {
+                dialogBox.close({
+                    dialogName: 'alert'
+                });
+            };
+        });
+    };
+
+    //获取缓存大小
+    var CacheSize = 0;
+    function getCacheSize() {
+        var size = api.getCacheSize({
+            sync: true
+        });
+        CacheSize = (size / (1024 * 1024)).toFixed(2);
+        $(".cache-size").text(CacheSize + "MB");
+    };
+    //清除缓存
+    function ClearCache() {
+        api.clearCache(function (e) {
+            api.toast({
+                msg: '清除缓存：' + CacheSize + 'MB',
+            });
+            $(".cache-size").text(0 + "MB");
+        });
+    };
+
+    var pushimg = $api.dom(".push-img");
+    //开关推送
+    function SetPush() {
+        var tf = $api.hasCls(pushimg, "active");
+        if (tf) {
+            localStorage.setItem("Push", "true");
+            $api.removeCls(pushimg, "active");
+            $api.attr(pushimg, "src", "../../image/user/push_kaiqi.png");
+            Push();
+        } else {
+            api.confirm({
+                title: '确定要关闭消息推送吗？',
+                msg: '关闭后将无法收到订单提醒和降价促销等消息',
+                buttons: ['确定', '取消']
+            }, function (ret, err) {
+                var index = ret.buttonIndex;
+                if (index == 1)
+                {
+                    localStorage.setItem("Push", "false");
+                    $api.addCls(pushimg, "active");
+                    $api.attr(pushimg, "src", "../../image/user/push_guanbi.png");
+                    Push();
+                }
+            });
+        }
+    }
+</script>
+</html>

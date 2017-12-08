@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>好友邀请</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link href="../../css/bootstrap.css" rel="stylesheet" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        html, body { background: #ec3f33; }
+        .wdjl { background: #fff; margin-top: 10px; border-radius: 1.0667rem; text-align: center; position: relative; padding-bottom: 10px; }
+        .wdjl .title { margin: 0 auto 0.6667rem; display: block; width: 7.0667rem; position: relative; top: -0.32rem; height: auto; text-align: center; }
+        .hyjl { display: block; text-align: center; font-size: 16px; color: #ec3f33; }
+        .share { display: inline-block; line-height: 45px; height: 45px; color: #fff; font-size: 20px; border-radius: 30px; background: #de1a00; width: 90%; font-weight: 700; box-shadow: 0px 5px #c31700; }
+        .my-result { background: url(../../image/user/my-result.png) no-repeat center 25px #fff; border-radius: 1.0667rem; margin-top: 20px; background-size: 70% auto; }
+        .cb { opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12" style="padding-left:0;padding-right:0">
+                <img src="../../image/user/invitation_bg.png" style="max-width:100%" />
+            </div>
+            <div class="col-xs-12 text-center">
+                <div class="wdjl">
+                    <img src="../../image/user/invitation_award.png" class="title" />
+                    <div class="hyjl">
+                        <img src="../../image/user/gold.png" style="height:45px" />&nbsp;&nbsp;邀请好友返还金额的<span class="tgbl">20%</span>
+                    </div>
+                    <p class="up" style="color: #6d3600;">每成功邀请一个好友<br /> 最高可获得<span class="tgfz" style="color:#ec3f33;font-weight:bold;font-size:16px">100</span>元奖励</p>
+                    <span class="share" onclick="ShareF()" tapmode="cb">立即邀请</span>
+                    <p style="margin-top:10px;font-size:10px;color: #6d3600;">被邀请好友可随机获得1~100元新人红包</p>
+                </div>
+                <div class="my-result text-center" style="padding:50px 0 10px 0;">
+                    <ul class="list-inline">
+                        <li style="width:45%">
+                            <p style="color: #de1a00;font-size:18px;font-weight: 700;" class="fans-num">0人</p>
+                        </li>
+                        <li style="width:45%">
+                            <p style="color: #de1a00;font-size:18px;font-weight: 700;padding-left:20px" class="total-num">¥0.00</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-xs-12" style="color:#fff;margin-top:20px;padding-bottom:20px">
+                <p class="text-center" style="font-size:16px">其他注意事项</p>
+                1、记得注册之后多多教教好友怎么用哦！获得更高奖励机会更高！<br />
+                2、不要为了获得小小的邀请奖励而失掉了自己的诚信，我们会人工核查，对于查实的作弊行为，我们将收回该帐号全部的邀请奖励，严重者将冻结所有收入并永久封号；<br />
+                *作弊行为：包括但不限于使用相同的电脑、相同的IP地址在同一天内注册多个帐号，以骗取邀请奖励的行为。
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/config.js"></script>
+<script type="text/javascript" src="../../script/wsw.js"></script>
+<script type="text/javascript">
+
+    var rec_url = "";
+    apiready = function () {
+        api.setRefreshHeaderInfo({
+            visible: true,
+            bgColor: '#F4F4F4',
+            textColor: '#A2A2A2',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            showTime: true
+        }, function (ret, err) {
+            GetContent();
+            api.refreshHeaderLoadDone();
+        });
+        GetContent();
+    };
+
+    function GetContent() {
+        if (localStorage.getItem("LoginState")) {
+            api.showProgress({
+                style: 'default',
+                animationType: 'fade',
+                title: '数据加载中...',
+                modal: true
+            });
+            api.ajax({
+                url: GetDataUrl() + "/appwsw/index.php?mod=user&act=invite",
+                method: 'get',
+            }, function (ret, err) {
+                if (ret) {
+                    if (ret.s == 1) {
+                        rec_url =GetDataUrl()+ret.r.rec_url;
+                        $api.text($api.dom(".tgbl"), ret.r.tgbl * 100 + "%");
+                        $api.text($api.dom(".tgfz"), "￥" + ret.r.tgfz);
+                        api.ajax({
+                            url: ApiUrl.GetFans,
+                            method: 'get',
+                        }, function (ret, err) {
+                            if (ret) {
+                                if (ret.s == 1) {
+                                    var fansnum = ret.r.length;
+                                    var totalnum = 0;
+                                    $api.text($api.dom(".fans-num"), fansnum + "人");
+                                    for (var i in ret.r) {
+                                        totalnum += parseInt(ret.r[i].tgyj, 2);
+                                    };
+                                    $api.text($api.dom(".total-num"), "￥" + totalnum);
+                                };
+                            };
+                            api.hideProgress();
+                        });
+                    };
+                };
+                api.hideProgress();
+            });
+        } else {
+            UserLogIn();
+        };
+    };
+
+    function ShareF()
+    {
+        var title = localStorage.getItem("appwsw_fxtitle");
+        var description = localStorage.getItem("appwsw_fxms");
+        var img = localStorage.getItem("appwsw_fxtplink");
+        Share(title, description, img, rec_url);
+    }
+</script>
+</html>

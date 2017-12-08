@@ -1,0 +1,215 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>优惠直播</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link href="../../css/bootstrap.css" rel="stylesheet" />
+    <link href="../../css/public.css" rel="stylesheet" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        body { background-color: #ff0000; }
+        .top { display: block; width: 100%; height: 50px; background: #ffffff; color: #000000; font-size: 18px; line-height: 50px; }
+        .nav { display: block; width: 100%; height: 54px; background: #ff0000; color: #ffffff; }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    优惠直播
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="nav">
+
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script src="../../script/config.js"></script>
+<script type="text/javascript">
+    function ObtainItem(status) {
+        var arr = {
+            0: "nvzhuang",
+            1: "nanzhuang",
+            2: "neiyi",
+            3: "nuying",
+            4: "huazhuangpin",
+            5: "jujia",
+            6: "xiebaopeishi",
+            7: "meishi",
+            8: "wentichepin",
+            9: "shumajiadian",
+        }
+        return arr[status]
+    };
+    var couponnav;
+    var navitems = 10;//分类个数
+    var dtkmenuitem = 0;
+    var navstr= '';
+    apiready = function () {
+        var systemType = api.systemType;
+        if (systemType == "ios") {
+            navstr='_ios'
+        } else {
+            navstr = ''
+        }
+        api.execScript({
+            name: 'root',
+            script: 'tfc(true);',
+        });
+        //初始化菜单
+        InitialMenu();
+    };
+
+    //首页菜单切换
+    function DTKTypeMenuChange(index) {
+        if (navitems > index) {
+            couponnav.config({
+                key: 'selectedIndex',
+                value: index,
+            });
+        }
+    }
+    
+    var dtknav;
+    //初始化大淘客菜单
+    function InitialMenu() {
+        dtknav = api.require('NVNavigationBar');
+        
+        dtknav.open({
+            rect: {
+                x: 0,
+                y: 50,
+                w: api.frameWidth,
+                h: 54
+            },
+            styles: {
+                orientation: 'horizontal',
+                bgAlpha: 1,
+                itemSize: {
+                    w: 73,
+                    h: 54,
+                },
+                font: {                        //（可选项）JSON对象；字体配置
+                    size: 13,                   //（可选项）数字类型；导航项字体大小；默认：14
+                    sizeSelected: 13,           //（可选项）数字类型；选中时导航项字体大小；默认：14
+                    color: '#FFFFFF',           //（可选项）字符串类型；导航条字体颜色，支持rgb、rgba、#；默认：#FFFFFF
+                    colorSelected: '#FFFFFF',   //（可选项）字符串类型；选中时导航条字体颜色，支持rgb、rgba、#；默认：#FFFFFF
+                    alpha: 1,                   //（可选项）数字类型；背景透明度，取值范围：0-1；默认：1
+                },
+            },
+            items: [{
+                title: '\r\n\r\n女装',
+                bg: 'widget://image/dtk/nvzhuang' + navstr + '.png',
+                bgSelected: 'widget://image/dtk/nvzhuang1' + navstr + '.png',
+                alpha: 1,
+            }, {
+                title: '\r\n\r\n男装',
+                bg: 'widget://image/dtk/nanzhuang' + navstr + '.png',
+                bgSelected: 'widget://image/dtk/nanzhuang1' + navstr + '.png',
+                alpha: 1,
+            }, {
+                title: '\r\n\r\n内衣',
+                bg: 'widget://image/dtk/neiyi' + navstr + '.png',
+                bgSelected: 'widget://image/dtk/neiyi1' + navstr + '.png',
+                alpha: 1,
+            }, {
+                title: '\r\n\r\n母婴',
+                bg: 'widget://image/dtk/muying' + navstr + '.png',
+                bgSelected: 'widget://image/dtk/muying1' + navstr + '.png',
+                alpha: 1,
+            }, {
+                title: '\r\n\r\n化妆品',
+                bg: 'widget://image/dtk/huazhuangpin' + navstr + '.png',
+                bgSelected: 'widget://image/dtk/huazhuangpin1' + navstr + '.png',
+                alpha: 1,
+            }, {
+                title: '\r\n\r\n居家',
+                bg: 'widget://image/dtk/jujia' + navstr + '.png',
+                bgSelected: 'widget://image/dtk/jujia1' + navstr + '.png',
+                alpha: 1,
+            }, {
+                title: '\r\n\r\n鞋包配饰',
+                bg: 'widget://image/dtk/xiebaopeishi' + navstr + '.png',
+                bgSelected: 'widget://image/dtk/xiebaopeishi1' + navstr + '.png',
+                alpha: 1,
+            }, {
+                title: '\r\n\r\n美食',
+                bg: 'widget://image/dtk/meishi' + navstr + '.png',
+                bgSelected: 'widget://image/dtk/meishi1' + navstr + '.png',
+                alpha: 1,
+            }, {
+                title: '\r\n\r\n文体车品',
+                bg: 'widget://image/dtk/wentichepin' + navstr + '.png',
+                bgSelected: 'widget://image/dtk/wentichepin1' + navstr + '.png',
+                alpha: 1,
+            }, {
+                title: '\r\n\r\n数码家电',
+                bg: 'widget://image/dtk/shumajiadian' + navstr + '.png',
+                bgSelected: 'widget://image/dtk/shumajiadian1' + navstr + '.png',
+                alpha: 1,
+            }],
+            selectedIndex: 0,
+            fixedOn: api.frameName,
+            id: 'dtkmenu'
+        }, function (ret, err) {
+            if (ret) {
+                var n = ret.index;
+                if (n == undefined || n == "undefined") {
+                    n = 0;
+                };
+                dtkmenuitem = n;
+                OpenFrame("dataoke" + ObtainItem(n), "../../html/product/product_list_dtk.html", { "menuindex": n });
+            };
+        });
+        //GetLog(api.frameName, api.winName);//输出日志
+    }
+
+    //菜单切换
+    function DTKTypeMenuChange(index) {
+        if (navitems > index && index >= 0) {
+            dtknav.setSelected({
+                id: 'dtkmenu',
+                index: index,
+                selected: true
+            }, function (ret) {
+                if (ret.status) {
+                    if (index != undefined || index != "undefined") {
+                        dtkmenuitem = index;
+                        OpenFrame("dataoke" + ObtainItem(index), "../../html/product/product_list_dtk.html", { "menuindex": index });
+                    }
+                };
+            });
+        }
+    };
+
+    //初始化界面
+    function DTKMenuInitialize() {
+        if (dtkmenuitem != undefined || dtkmenuitem != "undefined") {
+            OpenFrame("dataoke" + ObtainItem(dtkmenuitem), "../../html/product/product_list_dtk.html", { "menuindex": dtkmenuitem });
+        }
+    }
+
+    //打开窗口
+    function OpenFrame(frameName, frameUrl, frameParam) {
+        api.openFrame({
+            name: frameName,
+            url: frameUrl,
+            bounces: true,
+            bgColor: "#DFDEDE",
+            rect: {
+                x: 0,
+                y: 104,
+                w: 'auto',
+                h: api.frameHeight - 104
+            },
+            pageParam: frameParam,
+        });
+    }
+</script>
+</html>

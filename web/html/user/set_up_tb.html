@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>修改淘宝</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.css" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        html, body { background: #F0F0F0; }
+        .frame-top { background-color: #fff; border-bottom: 1px solid #ddd; }
+        .frame-top .menu-name { color: #000; font-size: 18px; height: 50px; line-height: 50px; }
+        .frame-top .menu-name a { position: absolute; display: block; height: 50px; width: 50px; text-align: left; }
+        .cb { opacity: 0.8; }
+        .frame-top .menu-name a:last-child { width: 100px; text-decoration: none; color: #575757; font-size: 16px; }
+        .frame-top .menu-name a:last-child:focus { text-decoration: none; }
+
+
+        .my-input { display: table-row; width: 100%;line-height: 20px; padding: 5px 15px; font-size: 16px; color: #000; background-color: #ffffff; background-image: none; border: none; outline: 0; }
+        .my-input::-moz-placeholder { color: #C3C3C3; }
+        .my-input:-ms-input-placeholder { color: #C3C3C3; }
+        .my-input::-webkit-input-placeholder { color: #C3C3C3; }
+
+        i { z-index: 3; position: absolute; height: 50px; line-height: 50px; width: 50px; text-align: center; right: 0; top: 0; }
+        i img { width: 25px; height: auto; }
+        /*.name { font-size: 18px; z-index: 3; position: absolute; height: 50px; line-height: 50px; text-align: center; left: 0; top: 0; padding-left: 10px; }*/
+        .alert { margin-top: 10px; border-radius: 0px; padding: 8px 15px;margin-bottom:10px }
+    </style>
+</head>
+<body>
+    <div class="container-fluid frame-top" id="frame-top">
+        <div class="row">
+            <div class="col-xs-12 text-center menu-name">
+                <a onclick="api.closeWin();" tapmode="cb">
+                    <img src="../../image/return.png" style="height: 20px;margin-top: -5px;" />
+                </a>
+                <span id="title">淘宝账号绑定</span>
+                <a onclick="Save()" style="right: 0;top: 0;text-align: right;padding-right: 15px;" tapmode="cb">
+                    保存
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="">
+                <div class="alert alert-info info">
+                    只是登记拿返利，不需要密码，请放心。如有多个账号或者订单号，请用“,”隔开 。（注意“,”为英文格式逗号）
+                </div>
+            </div>
+            <div class="col-xs-12" style="margin-top:0px;padding-left:0;padding-right:0">
+                <label class="name" style="padding-left:15px;">淘宝号/订单号：</label>
+                <textarea class="my-input" placeholder="输入淘宝账号/订单号" rows="4" wrap="soft">hehehheh</textarea>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/config.js"></script>
+<script type="text/javascript">
+
+    var v = $api.dom(".my-input");
+    apiready = function () {
+        var frameParam = api["pageParam"];
+        var tbnick = frameParam["tbnick"];
+        $api.text(v, tbnick);
+        NameLength();
+        //监听键盘前进按钮
+        window.onkeydown = function (event) {
+            if (event.keyCode == 13 || event.keyCode == 9) {
+                Save();
+            }
+        };
+    };
+
+    //保存
+    function Save() {
+        var empty = $api.val(v);
+        if (empty != null && empty != "" && empty != undefined && empty != "undefined") {
+            api.showProgress({
+                style: 'default',
+                animationType: 'fade',
+                title: '正在保存...',
+                modal: true
+            });
+            api.ajax({
+                url: GetDataUrl() + '/appwsw/index.php?mod=user&act=set&tbnick=' + empty,
+                method: 'get',
+            }, function (ret, err) {
+                if (ret) {
+                    if (ret.s == 1) {
+                        api.alert({
+                            title: '提示',
+                            msg: ret.r,
+                        }, function (ret, err) {
+                            api.execScript({
+                                name: 'frameWin_user_infor_set',
+                                frameName: 'user_infor_set',
+                                script: 'GetContent();'
+                            });
+                            api.closeWin();
+                        });
+                    } else {
+                        api.toast({
+                            msg: ret.r,
+                            duration: 5000,
+                            location: 'middle'
+                        });
+                    }
+                } else {
+                    api.toast({
+                        msg: JSON.stringify(err),
+                        duration: 5000,
+                        location: 'middle'
+                    });
+                }
+                api.hideProgress();
+            });
+        }
+    }
+
+    //判断name
+    function NameLength() {
+
+        if ($api.val(v) != "" && $api.val(v) != undefined) {
+            $api.removeCls($api.dom(".icon"), 'active');
+            $api.attr($api.dom(".icon img"), 'src', '../../image/login/edit_close.png');
+        } else {
+            $api.addCls($api.dom(".icon"), 'active');
+            $api.attr($api.dom(".icon img"), 'src', '../../image/login/kb.png');
+        };
+    }
+
+    //删除name
+    function DelName() {
+        var name = $api.dom(".icon");
+        var t = $api.hasCls(name, 'active');
+        if (t) { }
+        else {
+            $api.removeCls(name, 'active');
+            $api.attr($api.dom(".icon img"), 'src', '../../image/login/kb.png');
+            $api.val(v, '');
+        }
+    }
+</script>
+</html>

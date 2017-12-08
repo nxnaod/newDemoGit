@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>产品搜索</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link href="../../css/bootstrap.css" rel="stylesheet" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        html, body { background-color: #fff; }
+        .top { height: 50px; border-bottom: 1px solid #dddddd; display: block; width: 100%; }
+        .search-return { display: block; width: 40px; height: 50px; text-align: center; line-height: 50px; position: absolute; }
+        .search-return img { height: 23px; width: auto; }
+
+        .my-input { width: 100%; display: block; height: 50px; line-height: 50px; text-align: center; padding-left: 40px; padding-right: 10px; }
+        .my-input img { height: 16px; width: auto; position: absolute; top: 17px; left: 45px; }
+        .my-input input { background: #F2F2F2; height: 35px; line-height: 35px; border-radius: 6px; width: 100%; padding-left: 30px; padding-right: 5px; }
+        .my-input input:focus { border: none; outline: 0; -webkit-box-shadow: none; box-shadow: none; }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12" style="padding-left:0;padding-right:0">
+                    <span class="search-return" onclick="api.closeWin();" tapmode="cb">
+                        <img src="../../image/product/search_return.png" />
+                    </span>
+                    <div class="my-input" onclick="OpenSearch()" tapmode="cb">
+                        <img src="../../image/product/serch.png" />
+                        <input type="text" placeholder="搜淘宝宝贝   拿返利" class="search-val" disabled value="" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script src="../../script/config.js"></script>
+<script src="../../script/wsw.js"></script>
+<script type="text/javascript">
+
+    var searchinput = $api.dom(".search-val");
+    apiready = function () {
+        /* 根据当前模块分类动态改变标题. */
+        var frameParam = api["pageParam"];
+        var searchVal = frameParam["searchVal"];
+        $api.val(searchinput,searchVal);
+        OpenProductList(searchVal);
+    };
+    function OpenProductList(searchVal) {
+        api.openFrame({
+            name: 'product_list_content',
+            url: '../../html/product/product_list_content.html',
+            rect: {
+                x: 0,
+                y: 51,
+                w: 'auto',
+                h: 'auto'
+            },
+            pageParam: {
+                "searchVal": searchVal
+            },
+        });
+    };
+
+    //打开搜索
+    function OpenSearch() {
+        OpenWin("product_search", "../../html/product/search_product.html");
+    }
+</script>
+</html>

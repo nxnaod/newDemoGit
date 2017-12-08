@@ -1,0 +1,218 @@
+﻿<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>Hello APP</title>
+    <link rel="stylesheet" type="text/css" href="../css/api.css" />
+    <link href="../css/font.css" rel="stylesheet" />
+    <style>
+    #con {
+        margin: 10px;
+        font-size: 24px;
+    }
+    
+    ul {
+        margin-bottom: 10px;
+    }
+    
+    ul li {
+        margin: 5px 10px;
+        padding: 5px;
+        color: #000;
+        word-wrap: break-word;
+    }
+    
+    div {
+        padding-left: 10px;
+    }
+    </style>
+</head>
+
+<body>
+    <label id="con">接口测试</label>
+    <div onclick="showLogin()">(登录)showLogin</div>
+    <br>
+    <div onclick="getUserInfo()">(获取用户信息)getUserInfo</div>
+    <br>
+    <div onclick="logout()">(退出登录)logout</div>
+    <br>
+    <div onclick="openMyCart()">(打开购物车)openMyCart</div>
+    <br>
+    <div onclick="myOrdersPage()">(打开订单)myOrdersPage</div>
+    <br>
+    <div onclick="showTaokeItemById()">(通过ID打开宝贝)showTaokeItemById</div>
+    <br>
+    <div onclick="showTaokeItemById_Openid()">(通过Oeniid打开宝贝)showTaokeItemById_Openid</div>
+    <br>
+    <div onclick="showDetailByURL()">(通过URL打开宝贝)showDetailByURL</div>
+    <br>
+    <div onclick="openShopPage()">(打开店铺)openShopPage</div>
+    <br>
+    <div onclick="addToCartPage()">(添加进购物车)addToCartPage</div>
+</body>
+<script type="text/javascript" src="../script/api.js"></script>
+<script type="text/javascript">
+var alibaichuan;
+apiready = function() {
+    alibaichuan = api.require('alibaichuan');
+    var param = {
+        isvcode: "feeling"
+    };
+    alibaichuan.initTaeSDK(param, function(ret, err) {
+        if (ret) {
+            alert(JSON.stringify(ret));
+        } else {
+            alert(JSON.stringify(err));
+        }
+    });
+};
+
+// 登录
+function showLogin() {
+    alibaichuan.showLogin(function(ret, err) {
+        if (ret) {
+            alert("登录success:" + JSON.stringify(ret));
+        } else {
+            alert("登录error:" + JSON.stringify(ret));
+        }
+    });
+}
+
+//getUserInfo
+function getUserInfo() {
+    alibaichuan.getUserInfo(function(ret, err) {
+        if (ret) {
+            alert("用户信息 ret - " + JSON.stringify(ret));
+        } else {
+            alert("用户信息 err - " + JSON.stringify(err));
+        }
+    });
+}
+
+//getUserInfo
+function logout() {
+    alibaichuan.logout(function(ret, err) {
+        if (ret) {
+            alert("ret - " + JSON.stringify(ret));
+        } else {
+            alert("err - " + JSON.stringify(err));
+        }
+    });
+}
+
+//openMyCart
+function openMyCart() {
+    var param = {
+        isvcode: "feeling",
+        nativeview: false
+    };
+    alibaichuan.openMyCart(param, function(ret, err) {
+        if (ret) {
+            alert("ret - " + JSON.stringify(ret));
+        } else {
+            alert("err - " + JSON.stringify(err));
+        }
+    });
+}
+
+//myOrdersPage
+function myOrdersPage() {
+    var param = {
+        status: 2,
+        isAllOrder: true,
+        nativeview: false
+    };
+    alibaichuan.myOrdersPage(param, function(ret, err) {
+        if (ret) {
+            alert("ret - " + JSON.stringify(ret));
+        } else {
+            alert("err - " + JSON.stringify(err));
+        }
+    });
+}
+
+//通过Itemsid打开
+function showTaokeItemById() {
+    var param = {
+        isvcode: "feeling",
+        itemid: "15409505658", //或openid:AAHyOaTIADoqwaqgX6Kr_lTS
+        mmpid: "mm_112712463_0_0",
+        nativeview: false
+    };
+    alibaichuan.showTaokeItemById(param, function(ret, err) {
+        if (ret) {
+            alert("ret - " + JSON.stringify(ret));
+        } else {
+            alert("err - " + JSON.stringify(err));
+        }
+    });
+}
+
+function showTaokeItemById_Openid() {
+    var param = {
+        isvcode: "feeling",
+        itemid: "AAH0XyhFACIB6LoMMaWIld9D",
+        mmpid: "mm_112712463_0_0",
+    };
+    alibaichuan.showTaokeItemById(param, function(ret, err) {
+        if (ret) {
+            alert("ret - " + JSON.stringify(ret));
+        } else {
+            alert("err - " + JSON.stringify(err));
+        }
+    });
+}
+
+// 通过openid打开
+function showDetailByURL() {
+    var param = {
+        url: "https://s.click.taobao.com/MmGAPHx",
+        // url: "https://s.click.taobao.com/ptJoEIx",
+        mmpid: "mm_112712463_0_0",
+        nativeview: false
+    };
+    alibaichuan.showDetailByURL(param, function(ret, err) {
+        if (ret) {
+            alert(JSON.stringify(ret));
+        } else {
+            alert(JSON.stringify(err));
+        }
+    });
+}
+
+// 打开商铺
+function openShopPage() {
+    var param = {
+        shopid: "64185146",
+        nativeview: false
+    };
+    alibaichuan.openShopPage(param, function(ret, err) {
+        if (ret) {
+            alert(JSON.stringify(ret));
+        } else {
+            alert(JSON.stringify(err));
+        }
+    });
+}
+
+// 添加进购物车
+function addToCartPage() {
+    var param = {
+        // itemid: "540384005662"
+        itemid : "AAH0XyhFACIB6LoMMaWIld9D",
+        nativeview: false
+    };
+    alibaichuan.addToCartPage(param, function(ret, err) {
+        if (ret) {
+            alert(JSON.stringify(ret));
+        } else {
+            alert(JSON.stringify(err));
+        }
+    });
+}
+</script>
+
+</html>

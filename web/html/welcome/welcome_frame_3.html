@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <title>轮播3</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <style>
+        html, body { height: 100%; background: transparent; }
+        header { height: 50px; position: relative; }
+        .skip { position: absolute; bottom: 0px; right: 15px; width: 90px; height: 38px; line-height: 38px; border: solid rgb(211, 211, 211) 1px; border-radius: 38px; color: #000; font-size: 16px; }
+        .skip > span { padding-left: 20px; }
+        .skip > img { padding-top: 12px; vertical-align: top; height: 13px; }
+
+        .sld-nav { display: block; width: 100%; text-align: center; position: absolute; bottom: 20px; }
+        .sld-nav ul li a { display: block; width: 12px; height: 12px; border-radius: 50%; border: 1px solid #fff; }
+        .sld-nav ul li a.active { background-color: #fff; }
+        .sld-nav ul li { display: inline-block; margin: 2px; }
+    </style>
+</head>
+
+<body>
+    <!--<header>
+        <div class="skip" onclick="fnSkip()">
+            <span>跳过</span>
+            <img src="../image/welcome/arrow.png" />
+        </div>
+    </header>-->
+    <div class="sld-nav">
+        <ul>
+            <li>
+                <a></a>
+            </li>
+            <li>
+                <a></a>
+            </li>
+            <li>
+                <a class="active"></a>
+            </li>
+            <li>
+                <a></a>
+            </li>
+        </ul>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/wsw.js"></script>
+<script type="text/javascript">
+    function fnSkip() {
+        indexOrWelcome();
+    };
+    apiready = function () {
+
+    };
+</script>
+
+</html>

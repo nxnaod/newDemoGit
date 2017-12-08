@@ -1,0 +1,377 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>多多返利</title>
+    <link rel="stylesheet" type="text/css" href="./css/api.css" />
+    <link rel="stylesheet" type="text/css" href="./css/bootstrap.css" />
+    <link href="./css/font.css" rel="stylesheet" />
+    <style type="text/css">
+        .footer { height: 50px; background-color: #FDFDFD; color: #3D4245; border-top: 1px solid #ddd; }
+
+        .footer a { color: #92939C; display: block; }
+
+        .footer a.active { color: #FA5047; }
+
+        .footer a:hover, .footer a:focus { text-decoration: none; }
+
+        .footer .col-xs-2 { width: 20%; text-align: center; padding-left: 0; padding-right: 0; padding-top: 2px; }
+
+        .footer .col-xs-2 span { display: block; height: 30px; width: 100%; background: url('./image/icon/icon_home.png'); background-size: auto 22px; background-repeat: no-repeat; background-position: center; }
+
+        .footer .col-xs-2:nth-child(1) span { background-image: url('./image/icon/icon_home.png'); }
+
+        .footer .col-xs-2:nth-child(2) span { background-image: url('./image/icon/icon_coupon.png'); }
+
+        .footer .col-xs-2:nth-child(3) span { background-image: url('./image/icon/icon_rebate.png'); position: absolute; height: 40px; background-size: auto 40px; top: -10px; }
+
+        .footer .col-xs-2:nth-child(4) span { background-image: url('./image/icon/icon_fx.png'); }
+
+        .footer .col-xs-2:nth-child(5) span { background-image: url('./image/icon/icon_user.png'); }
+
+        .footer .col-xs-2:nth-child(1) .active span { background-image: url('./image/icon/icon_home_active.png'); }
+
+        .footer .col-xs-2:nth-child(2) .active span { background-image: url('./image/icon/icon_coupon_active.png'); }
+
+        .footer .col-xs-2:nth-child(3) .active span { background-image: url('./image/icon/icon_rebate_active.png'); }
+
+        .footer .col-xs-2:nth-child(4) .active span { background-image: url('./image/icon/icon_fx_active.png'); }
+
+        .footer .col-xs-2:nth-child(5) .active span { background-image: url('./image/icon/icon_user_active.png'); }
+
+        .footer .col-xs-2 p { font-size: 10px; margin-bottom: 0; font-weight: 500; }
+
+        .navbar-fixed-bottom { position: fixed; right: 0; left: 0; z-index: 1030; bottom: 0; margin-bottom: 0; border-width: 1px 0 0; }
+
+        .cb { opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div id="main">
+
+    </div>
+    <div class="footer navbar-fixed-bottom" id="footer">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-2" onclick="HomeMenuSwitch(0)" tapmode="cb">
+                    <a href="javascript:;" class="active">
+                        <span></span>
+                        <p>首页</p>
+                    </a>
+                </div>
+                <div class="col-xs-2 menu-type-bt" onclick="HomeMenuSwitch(1)" tapmode="cb">
+                    <a href="javascript:;">
+                        <span></span>
+                        <p>优惠券</p>
+                    </a>
+                </div>
+                <div class="col-xs-2" onclick="HomeMenuSwitch(2)" tapmode="cb">
+                    <a href="javascript:;">
+                        <span></span>
+                        <p style="margin-top:30px">返利工具</p>
+                    </a>
+                </div>
+                <div class="col-xs-2" onclick="HomeMenuSwitch(3)" tapmode="cb">
+                    <a href="javascript:;">
+                        <span></span>
+                        <p>分销</p>
+                    </a>
+                </div>
+                <div class="col-xs-2" onclick="HomeMenuSwitch(4)" tapmode="cb">
+                    <a href="javascript:;">
+                        <span></span>
+                        <p>我的</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="./script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="./script/api.js"></script>
+<script src="./script/config.js"></script>
+<script type="text/javascript" src="./script/wsw.js"></script>
+<script type="text/javascript">
+
+    function ObtainItem(status) {
+        var arr = {
+            0: "home",
+            1: "coupon",
+            2: "rebate_tools",
+            3: "distribution",
+            4: "user_infor",
+        }
+        return arr[status]
+    };
+    var connectionType = "none";
+    apiready = function () {
+        
+        //移除登录状态
+        // localStorage.removeItem('LoginState');
+
+        //滚动欢迎页测试---开启可一直出现滚动
+        //localStorage.removeItem("firstStart");
+
+        //网络状态
+        connectionType = api.connectionType;
+        GetAppSetAll();
+
+        // 设置ios7的标题栏字体变亮，全局用一个就行了
+        api.setStatusBarStyle({
+            style: 'light',
+            color: '#000',
+        });
+
+        //判断轮播页
+        indexOrWelcome();
+
+        //推送
+        Push();
+
+        api.addEventListener({
+            name: 'keyback'
+        }, function (ret, err) {
+            if (indextag != 0) {
+                HomeMenuSwitch(0);
+            } else {
+                if (daojishi == 0) {
+                    //这里设置了倒计时为2秒
+                    daojishi = 2000;
+                    api.toast({
+                        msg: '再按一次退出' + api.appName,
+                        duration: 2000,
+                        location: 'bottom'
+                    });
+                    kaishiJishi();
+                } else {
+                    api.closeWidget({
+                        silent: true
+                    });
+                };
+            };
+        });
+
+        //GetLog(api.frameName, api.winName);//输出日志
+    };
+    var daojishi = 0;
+    //倒计时
+    function kaishiJishi() {
+        if (daojishi > 0) {
+            setTimeout(function () {
+                daojishi = daojishi - 20;
+                kaishiJishi();
+            }, 20);
+        }
+    };
+
+    var footerPos;
+    function funIniGroup() {
+
+        //如果欢迎页为隐藏，隐藏欢迎页
+        api.setFrameGroupAttr({
+            name: 'welcome',
+            hidden: true
+        });
+
+        //获取底部高度
+        var footer = $api.byId('footer');
+        footerPos = $api.offset(footer);
+        api.openFrame({
+            name: ObtainItem(0),
+            url: './html/home/' + ObtainItem(0) + '.html',
+            rect: {
+                x: 0,
+                y: 0,
+                w: 'auto',
+                h: api.frameHeight - footerPos.h - 10
+            },
+            pageParam: {}
+        });
+    };
+
+    var _tf = false;
+    //判断是否打开过分销页面
+    function tfd(tf) {
+        _tf = tf;
+    }
+
+    var _tfc = false;
+    //判断是否打开过分优惠券
+    function tfc(tfc) {
+        _tfc = tfc;
+    }
+
+    var indextag = 0;
+    // 随意切换按钮
+    function HomeMenuSwitch(tag) {
+        indextag = tag;
+        if (tag == 0) {
+            GoToMenu(tag);
+            api.execScript({
+                name: 'root',
+                frameName: 'home',
+                script: 'MenuInitialize();',
+            });
+        } else if (tag == 1) {
+            GoToMenu(tag);
+            if (_tfc) {
+                api.execScript({
+                    name: 'root',
+                    frameName: 'coupon',
+                    script: 'DTKMenuInitialize();',
+                });
+            }
+        } else if (tag == 3 || tag == 4) {
+            if (GetLoginState()) {
+                api.closeWin({
+                    name: 'login'
+                });
+                GoToMenu(tag);
+                if (tag == 3 && _tf) {
+                    api.execScript({
+                        name: 'root',
+                        frameName: 'distribution_content',
+                        script: 'GetContent();',
+                    });
+                };
+            } else {
+                UserLogIn(1, 'HomeMenuSwitch(' + tag + ')', "root");
+            }
+        } else {
+            GoToMenu(tag);
+        };
+    };
+
+    function GoToMenu(tag) {
+        indextag = tag;
+        var _this = $('#footer .col-xs-2').eq(tag).find('a');
+        if (_this.hasClass('active')) return;
+        $('#footer .col-xs-2 a').removeClass('active');
+        _this.addClass('active');
+        var _reload = false;
+        if (tag == 3 || tag == 4) {
+            _reload = true;
+        }
+        api.openFrame({
+            name: ObtainItem(tag),
+            url: './html/home/' + ObtainItem(tag) + '.html',
+            rect: {
+                x: 0,
+                y: 0,
+                w: 'auto',
+                h: api.frameHeight - footerPos.h - 10
+            },
+            reload: _reload,
+            pageParam: {}
+        });
+    }
+
+    //欢迎页
+    function Welcome() {
+        api.openFrameGroup({
+            name: 'welcome',
+            scrollEnabled: true,
+            vScrollBarEnabled: false,
+            hScrollBarEnabled: false,
+            rect: {
+                x: 0,
+                y: 0,
+                w: 'auto',
+                h: 'auto'
+            },
+            index: 0,
+            frames: [{
+                name: 'welcome_frame_1',
+                url: './html/welcome/welcome_frame_1.html',
+                bgColor: './image/welcome/1.jpg',
+                bounces: false
+            }, {
+                name: 'welcome_frame_2',
+                url: './html/welcome/welcome_frame_2.html',
+                bgColor: './image/welcome/2.jpg',
+                bounces: false
+            }, {
+                name: 'welcome_frame_3',
+                url: './html/welcome/welcome_frame_3.html',
+                bgColor: './image/welcome/3.jpg',
+                bounces: false
+            }, {
+                name: 'welcome_frame_4',
+                url: './html/welcome/welcome_frame_4.html',
+                bgColor: './image/welcome/4.jpg',
+                bounces: false
+            }]
+        }, function (ret, err) {
+            var name = ret.name;
+            var index = ret.index;
+            if (index == 0) {
+                localStorage.setItem("firstStart", true);
+            };
+        });
+    };
+
+    //获取网站配置
+    function GetAppSetAll() {
+        if (connectionType != "none") {
+            api.ajax({
+                url: ApiUrl.GetAppSetUp,
+                method: 'get',
+            }, function (ret, err) {
+                if (ret) {
+                    if (ret.s == 1) {
+                        localStorage.setItem("appwsw_qiandao", ret.r.appwsw_qiandao);//签到七天金额
+                        localStorage.setItem("appwsw_appkey", ret.r.appwsw_appkey);//APPKey
+                        localStorage.setItem("appwsw_appvalue", ret.r.appwsw_appvalue);//AppVal
+                        localStorage.setItem("appwsw_mmid", ret.r.appwsw_mmid);//淘宝MM_
+
+                        localStorage.setItem("appwsw_xinrencount", ret.r.appwsw_xinrencount);//是否是新人
+                        localStorage.setItem("appwsw_xinrenfuli", $api.jsonToStr(ret.r.appwsw_xinrenfuli));//新人福利
+                        localStorage.setItem("appwsw_huodong", $api.jsonToStr(ret.r.appwsw_huodong));//活动
+                        localStorage.setItem("appwsw_indexad1", $api.jsonToStr(ret.r.appwsw_indexad1));//首页广告1
+                        localStorage.setItem("appwsw_indexad2", $api.jsonToStr(ret.r.appwsw_indexad2));//首页广告2
+                        localStorage.setItem("appwsw_qdad", $api.jsonToStr(ret.r.appwsw_qdad));//签到广告
+                        localStorage.setItem("appwsw_fxad", $api.jsonToStr(ret.r.appwsw_fxad));//分销广告
+                        localStorage.setItem("appwsw_wdad", $api.jsonToStr(ret.r.appwsw_wdad));//我的广告
+                        localStorage.setItem("appwsw_msad", $api.jsonToStr(ret.r.appwsw_msad));//秒杀广告
+                        localStorage.setItem("appwsw_spad", $api.jsonToStr(ret.r.appwsw_spad));//商品列表广告
+
+
+                        localStorage.setItem("appwsw_fxtitle", ret.r.appwsw_fxtitle);//分享标题
+                        localStorage.setItem("appwsw_fxms", ret.r.appwsw_fxms);//分享详情
+                        localStorage.setItem("appwsw_fxtplink", ret.r.appwsw_fxtplink);//分享图片链接
+                        localStorage.setItem("fxurl", ret.r.fxurl);//分享链接
+
+                        localStorage.setItem("appwsw_indexbankuai", ret.r.appwsw_indexbankuai);//首页版块
+                        localStorage.setItem("appwsw_indexlist", ret.r.appwsw_indexlist);//首页列表类型
+                        localStorage.setItem("appwsw_dataokelist", ret.r.appwsw_dataokelist);//大淘客列表类型
+                        localStorage.setItem("appwsw_listlist", ret.r.appwsw_listlist);//主列表列表类型
+
+                        localStorage.setItem("appwsw_qiandaotype", ret.r.appwsw_qiandaotype);//签到方式
+
+                        localStorage.setItem("appwsw_listTip", ret.r.appwsw_listtip);//产品更新时间
+
+                        localStorage.setItem("appwsw_tel", ret.r.appwsw_tel);//客服电话
+                        localStorage.setItem("appwsw_duanxinregister", ret.r.appwsw_duanxinregister);//短信认证
+
+                        localStorage.setItem("appwsw_weixinlogin", ret.r.appwsw_weixinlogin);//微信登录
+                        localStorage.setItem("appwsw_taobaologin", ret.r.appwsw_taobaologin);//淘宝登录
+                        localStorage.setItem("appwsw_qqlogin", ret.r.appwsw_qqlogin);//QQ登录
+                        localStorage.setItem("appwsw_weibologin", ret.r.appwsw_weibologin);//微博登录
+                    };
+                };
+            });
+        } else {
+            api.alert({
+                title: '提示',
+                msg: '您的设备未连接网络，请链接网络后再启动应用',
+            }, function (ret, err) {
+                api.closeWidget({
+                    silent: true
+                });
+            });
+        }
+    }
+</script>
+</html>

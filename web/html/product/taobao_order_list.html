@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>淘宝订单</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        body { }
+    </style>
+</head>
+<body>
+
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+
+    var alibaichuan = null;
+    apiready = function () {
+        alibaichuan = api.require('alibaichuan');
+        myOrdersPage();
+    };
+
+    //myOrdersPage
+    function myOrdersPage() {
+        var param = {
+            status: 0,
+            isAllOrder: true,
+            nativeview: true
+        };
+        alibaichuan.myOrdersPage(param, function (ret, err) {
+            if (ret) {
+                alert("ret - " + JSON.stringify(ret));
+            } else {
+                alert("err - " + JSON.stringify(err));
+            }
+        });
+    }
+</script>
+</html>

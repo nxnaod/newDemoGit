@@ -1,0 +1,191 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>余额提现</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link href="../../css/bootstrap.css" rel="stylesheet" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        body { }
+        .my-form { margin-top: 15px; }
+        label { font-weight: 500; }
+        label small { color: #9C9C9C; }
+        .form-control { border-radius: 0; height: 38px; line-height: 38px; padding: 0 12px; }
+        .submit-bt { opacity: 0.5; width: 100%; height: 45px; display: block; line-height: 45px; color: #ffffff; background: #FF3C4C; font-size: 16px; border-radius: 5px; margin-top: 10px; }
+        .form-group { margin-bottom:10px}
+         .alert { margin-bottom: 10px; border-radius: 0px;padding:8px 15px; }
+    </style>
+</head>
+<body>
+    <div class="my-form">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="alert alert-info info">
+
+                    </div>
+                    <div class="form-group">
+                        <label for="money" style="margin-bottom:0">现有余额： <span style="color:#ff0000" class="money">00</span>（元）</label>
+                    </div>
+                    <div class="form-group">
+                        <label for="money">申请提取：<small>小于 <span style="color:#ff0000" class="maxmoney">50000</span>（元）  大于 <span style="color:#ff0000" class="txxz">0</span></small></label>
+                        <input type="number" class="form-control" id="money" placeholder="输入提现金额" oninput="YuEEmpty()">
+                    </div>
+                    <div class="form-group">
+                        <label for="alipay">支付宝账号：<small>您的支付宝账号</small></label>
+                        <input type="text" class="form-control" id="alipay" placeholder="支付宝账号" value="" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="realname">收款人姓名：<small>转账核对时用，与支付宝对应</small></label>
+                        <input type="text" class="form-control" id="realname" placeholder="收款人姓名" value="" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="mobile">手机号：<small>填写您的手机号码</small></label>
+                        <input type="number" class="form-control" id="mobile" placeholder="手机号" value="" oninput="YuEEmpty()">
+                    </div>
+                </div>
+                <div class="col-xs-12 text-center">
+                    <div class="input-box">
+                        <span class="submit-bt" onclick="Submit()" tapmode="cb">申请提现</span>
+                        <p style="color:#9C9C9C;font-size:12px;margin-top:5px;margin-bottom:0">预计1~2个工作日到账</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script src="../../script/config.js"></script>
+<script type="text/javascript">
+
+    apiready = function () {
+        api.setRefreshHeaderInfo({
+            visible: true,
+            bgColor: '#F4F4F4',
+            textColor: '#A2A2A2',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            showTime: true
+        }, function (ret, err) {
+            GetContent();
+            api.refreshHeaderLoadDone();
+        });
+        GetContent();
+    };
+
+    var mymoney = $api.dom(".money");
+    var maxmoney = $api.dom(".maxmoney");
+    var info = $api.dom(".info");
+    var txxz = $api.dom(".txxz");
+    var alipay = $api.dom("#alipay");
+    var realname = $api.dom("#realname");
+    var mobile = $api.dom("#mobile");
+    var money = $api.dom("#money");
+
+    var mmoney = 0;
+    function GetContent() {
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '数据加载中...',
+            modal: true
+        });
+        api.ajax({
+            url: ApiUrl.GetTXYuE,
+            method: 'get',
+        }, function (ret, err) {
+            if (ret) {
+                if (ret.s == 1) {
+                    $api.text(info, ret.r.tipword);
+                    $api.text(mymoney, ret.r.live_money);
+                    mmoney = ret.r.max_money;
+                    $api.text(maxmoney, ret.r.max_money);
+                    $api.text(txxz, ret.r.tixian_limit);
+                    $api.val(alipay, ret.r.alipay)
+                    $api.val(realname, ret.r.realname)
+                    if (ret.r.mobile != "" && ret.r.mobile != undefined && ret.r.mobile != "undefined") {
+                        $api.attr(mobile, "disabled", "disabled");
+                        $api.val(mobile, ret.r.mobile)
+                    };
+                };
+            };
+            api.hideProgress();
+        });
+    }
+
+    var empty = false;
+    var submitbt = $api.dom(".submit-bt");
+    //判断金额
+    function YuEEmpty() {
+        var y = $api.val(money);
+        var mobilev = $api.val(mobile);
+        if (y != "" && y != undefined && y != "undefined" && mobilev != "" && mobilev != undefined && mobilev != "undefined") {
+            if (mmoney > parseFloat(y) && parseFloat(y) > 0) {
+                empty = true;
+                $api.css(submitbt, 'opacity:1;');
+            } else {
+                empty = false;
+                $api.css(submitbt, 'opacity:0.5;');
+            }
+        } else {
+            empty = false;
+            $api.css(submitbt, 'opacity:0.5;');
+        }
+    }
+
+    //提交
+    function Submit() {
+        if (empty) {
+            var alipayv = $api.val(alipay);
+            var realnamev = $api.val(realname);
+            var mobilev = $api.val(mobile);
+            var moneyv = $api.val(money);
+            api.showProgress({
+                style: 'default',
+                animationType: 'fade',
+                title: '申请提交中...',
+                modal: true
+            });
+            api.ajax({
+                url: GetDataUrl() + '/appwsw/index.php?mod=user&act=tixian&sub=1&type=1&money=' + moneyv + '&alipay=' + alipayv + '&realname=' + realnamev + '&mobile=' + mobilev,
+                method: 'get',
+            }, function (ret, err) {
+                if (ret) {
+                    if (ret.s == 1) {
+                        api.alert({
+                            title: '提示',
+                            msg: ret.r,
+                        }, function (ret, err) {
+                            api.execScript({
+                                name: 'root',
+                                frameName: 'user_infor',
+                                script: "GetContent();"
+                            });
+                            api.closeWin({
+                                name: 'caiwu_set'
+                            });
+                            api.closeWin();
+                        });
+                    } else {
+                        api.alert({
+                            title: '提示',
+                            msg: ret.r,
+                        });
+                    }
+                } else {
+                    api.toast({
+                        msg: JSON.stringify(err),
+                        duration: 2000,
+                        location: 'middle'
+                    });
+                }
+                api.hideProgress();
+            });
+        }
+    }
+</script>
+</html>

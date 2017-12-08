@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>商城订单</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link href="../../css/bootstrap.css" rel="stylesheet" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        html, body { background-color: #F1EFF2; }
+
+        .nolist { display: block; width: 100%; text-align: center; color: #999; font-size: 10px; margin-top: 20px; }
+        .nolist img { height: 100px; width: auto; }
+
+        .sz-list { margin-top: 10px; }
+        .sz-list li { background: #fff; margin-left: -10px; margin-right: -10px; padding-left: 5px; padding-right: 5px; min-height: 70px; margin-bottom: 10px; }
+        .sz-list li span { display: block; font-size: 10px; height: 20px; line-height: 20px; }
+        .sz-list .oder-id { margin-bottom: 5px; border-bottom: 1px solid #eee; height: 24px; line-height: 24px; font-size: 10px; }
+        .sz-list .oder-name { margin-bottom: 5px; }
+        /*返回首页*/
+        .return-top { width: 45px; height: 45px; background-color: #DD2727; color: #fff; font-size: 12px; position: fixed; z-index: 99; bottom: 55px; right: 10px; text-align: center; opacity: 0; line-height: 36px; border-radius: 44px; background-color: #FFF; border: 1px solid #CCC; padding-top: 2px; text-align: center; }
+        .return-top a { color: #BBB; display: block; text-align: center; }
+        .return-top.active { opacity: 1; filter: Alpha(opacity=100); }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12 content">
+                <ul class="list-unstyled sz-list">
+                    <!--<li>
+                        <p class="oder-id">
+                            订单号：21131962253848428
+                        </p>
+                        <p class="oder-name">
+                            徽格格225g徐集正宗原味花生糖休闲零食袋装花生酥手工特产麦芽糖
+                        </p>
+                        <p style="height:20px;margin-bottom:5px">
+                            <span class="oder-status pull-left" style="color:#00A500">订单结算</span>
+                            <span class="oder-time pull-left">&nbsp; 2017-06-03 11:33:27</span>
+                            <span class="oder-fxje pull-right">返：<span style="color:#ff0000" class="pull-right">50 集分宝</span></span>
+                        </p>
+                    </li>-->
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="return-top">
+            <div class="fhdb">
+                <a href="javascript:;" onclick="ReturnTop()" tapmode="cb">
+                    <img src="../../image/up.png" style="width:24px" />
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/doT.min.js"></script>
+<script type="text/javascript" src="../../script/config.js"></script>
+<script type="text/javascript" src="../../script/wsw.js"></script>
+<script type="text/x-dot-template" id="slist">
+    {{ for(var i=0;i<it.length;i++){ }}
+    <li>
+        <p class="oder-id">
+            订单号：{{=it[i].trade_id}}
+            <span class="pull-right" style="color:#ff0000">支付：{{=it[i].pay_price}}</span>
+        </p>
+        <p class="oder-name">
+            {{=it[i].item_title}}
+        </p>
+        <p style="height:20px;margin-bottom:5px">
+            <span class="oder-status pull-left" style="color:#00A500">{{=it[i].status_tip}}</span>
+            <span class="oder-time pull-left">&nbsp; {{=it[i].pay_time}}</span>
+            <span class="oder-fxje pull-right">返：<span style="color:#ff0000" class="pull-right">{{=it[i].fxje}}</span></span>
+        </p>
+    </li>
+    {{ } }}
+</script>
+<script type="text/javascript">
+    var slist = "";
+    var page = 0;
+    var pagemax = 1;
+    apiready = function () {
+        api.setRefreshHeaderInfo({
+            visible: true,
+            bgColor: '#F4F4F4',
+            textColor: '#A2A2A2',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            showTime: true
+        }, function (ret, err) {
+            slist = "";
+            page = 0;
+            pagemax = 1;
+            GetContent();
+            api.refreshHeaderLoadDone();
+        });
+        GetContent();
+
+        //滑动到底部刷新
+        api.addEventListener({
+            name: 'scrolltobottom',
+            extra: {
+                threshold: 0
+            }
+        }, function (ret, err) {
+            GetContent();
+        });
+    };
+    $(window).scroll(function () {
+        if ($(document).scrollTop() >= 200) {
+            $(".return-top").addClass("active");
+        };
+        if ($(document).scrollTop() < 200) {
+            $(".return-top").removeClass("active");
+        };
+    });
+    function GetContent() {
+        if (pagemax > page) {
+            api.showProgress({
+                style: 'default',
+                animationType: 'fade',
+                title: '数据加载中...',
+                modal: true
+            });
+            page++;
+            api.ajax({
+                url: ApiUrl.GetOrderListSC + page,
+                method: 'get',
+            }, function (ret, err) {
+                var nohtml = '<div class="nolist">\
+                                            <img src="../../image/user/nolist.png" />\
+                                            <p>您还没有订单哦~</p>\
+                                        </div>';
+                if (ret) {
+                    if (ret.s == 1) {
+                        pagemax = ret.r.total;
+                        if (ret.r.shuju_data != null) {
+                            if (ret.r.shuju_data.length > 0) {
+                                var List = doT.template($api.text($api.dom("#slist")));
+                                slist += List(ret.r.shuju_data);
+                                $api.html($api.dom('.sz-list'), slist);
+                                api.parseTapmode();
+                            } else if (page == 1) {
+                                $api.html($api.dom('.content'), nohtml);
+                            }
+                        } else if (page == 1) {
+                            $api.html($api.dom('.content'), nohtml);
+                        };
+                    } else {
+                        $api.html($api.dom('.content'), nohtml);
+                    };
+                } else {
+                    $api.html($api.dom('.content'), nohtml);
+                    api.toast({
+                        msg: '数据加载失败，请下拉刷新数据',
+                        duration: 5000,
+                        location: 'middle'
+                    });
+                }
+                api.hideProgress();
+            });
+        } else {
+            api.toast({
+                msg: '已经到底了~',
+                duration: 5000,
+                location: 'middle'
+            });
+        };
+    };
+</script>
+</html>

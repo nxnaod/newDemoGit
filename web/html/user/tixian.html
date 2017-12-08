@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>申请提现</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link href="../../css/bootstrap.css" rel="stylesheet" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        body { }
+        .top { height: 40px; line-height: 38px; font-size: 14px; color: #7d7d7d; border-bottom: 1px solid #DDDDDD; }
+        .top .col-xs-6 { }
+        .top .active { color: #FF3444; border-bottom: 2px solid #FF3444; }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-6 text-center active yue" onclick="YuE(0)" tapmode="cb">
+                    余额提现
+                </div>
+                <div class="col-xs-6 text-center jifenbao" onclick="JiFenBao(1)" tapmode="cb">
+                    集分宝提现
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    apiready = function () {
+        OpenFrameGroup();
+    };
+
+    function OpenFrameGroup() {
+        api.openFrameGroup({
+            name: 'tixian',
+            rect: {
+                x: 0,
+                y: 92,
+                w: 'auto',
+                h: api.frameHeight - 40
+            },
+            index: 0,
+            preload: 0,
+            scrollEnabled: false,
+            frames: [{
+                name: 'tixian_yue',
+                url: '../../html/user/tixian_yue.html',
+                bgColor: '#F1EFF2'
+            }, {
+                name: 'tixian_jifenbao',
+                url: '../../html/user/tixian_jifenbao.html',
+                bgColor: '#F1EFF2'
+            }]
+        }, function (ret, err) {
+        });
+    };
+
+    var yue = $api.dom(".top .yue");
+    var jifenbao = $api.dom(".top .jifenbao");
+    //余额提现
+    function YuE(index) {
+        $api.addCls(yue, "active");
+        $api.removeCls(jifenbao, "active");
+        SetGroupIndex(index);
+    }
+    //集分宝提现
+    function JiFenBao(index) {
+        $api.addCls(jifenbao, "active");
+        $api.removeCls(yue, "active");
+        SetGroupIndex(index);
+    }
+
+    function SetGroupIndex(index) {
+        api.setFrameGroupIndex({
+            name: 'tixian',
+            index: index,
+            reload: true,
+        });
+    };
+</script>
+</html>

@@ -1,0 +1,163 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>注册-输入手机号</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" href="../../css/bootstrap.css" />
+    <link rel="stylesheet" href="../../css/font.css" />
+    <style>
+        html, body { background-color: #F0F0F0; }
+        .register-menu { height: 45px; line-height: 45px; color: #000000; background-color: #ffffff; font-size: 12px; }
+        .register-menu .active { color: #FF3444; }
+        .register-menu li { padding-left: 0px; padding-right: 5px; }
+        .register-menu img { height: 10px; }
+        .display-n { display: none !important; }
+        .register-input { width: 100%; height: 45px; line-height: 45px; border: 2px solid #cccccc; border-radius: 5px; background: #ffffff; padding: 0 10px; }
+        .register-input:focus { outline: 0; }
+        .register-input::-moz-placeholder { color: #C3C3C3; }
+        .register-input:-ms-input-placeholder { color: #C3C3C3; }
+        .register-input::-webkit-input-placeholder { color: #C3C3C3; }
+        .register-bt { opacity: 0.5; width: 100%; height: 45px; display: block; line-height: 45px; color: #ffffff; background: #FF3C4C; font-size: 16px; border-radius: 5px; margin-top: 20px; }
+        .other-register { margin-top: 10px; margin-left: 0; }
+        .other-register li { height: 32px; line-height: 32px; color: #999; border: 1px solid #999; border-radius: 5px; padding: 0 15px; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12 register-menu">
+                <ul class="list-inline">
+                    <li class="active">
+                        输入手机号
+                    </li>
+                    <li class="yzm1 display-n">
+                        <img src="../../image/user/wd_tag_arrow_hui.png" />
+                    </li>
+                    <li class="yzm2 display-n">
+                        输入验证码
+                    </li>
+                    <li>
+                        <img src="../../image/user/wd_tag_arrow_hui.png" />
+                    </li>
+                    <li>
+                        设置密码，完成注册
+                    </li>
+                </ul>
+            </div>
+            <div class="col-xs-12" style="margin-top:20px">
+                <input type="number" class="mobile register-input" placeholder="请输入手机号" oninput="InputNull()" />
+            </div>
+            <div class="col-xs-12 text-center">
+                <span class="register-bt" onclick="RegisterNext()" tapmode="cb">免费注册，领特权</span>
+            </div>
+            <div class="col-xs-12" style="margin-top:20px">
+                <span style="color:#999">选择其他方式注册：</span>
+            </div>
+            <div class="col-xs-12">
+                <ul class="list-inline other-register">
+                    <li onclick="OpenMailRegister()" tapmode="cb">
+                        邮箱注册
+                    </li>
+                    <li onclick="OpenNameRegister()" tapmode="cb">
+                        用户名注册
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/config.js"></script>
+<script type="text/javascript" src="../../script/wsw.js"></script>
+<script type="text/javascript">
+    var yzmtf = false;
+    var nexttf = false;
+    apiready = function () {
+        localStorage.setItem("register", true);
+        if (localStorage.getItem("appwsw_duanxinregister")) {
+            if (localStorage.getItem("appwsw_duanxinregister") == 1) {
+                $api.removeCls($api.dom(".yzm1"), "display-n");
+                $api.removeCls($api.dom(".yzm2"), "display-n");
+                yzmtf = true;
+            } else {
+                $api.addCls($api.dom(".yzm1"), "display-n");
+                $api.addCls($api.dom(".yzm2"), "display-n");
+                yzmtf = false;
+            }
+        } else {
+            $api.addCls($api.dom(".yzm1"), "display-n");
+            $api.addCls($api.dom(".yzm2"), "display-n");
+            yzmtf = false;
+        };
+        //监听键盘前进按钮
+        window.onkeydown = function (event) {
+            if (event.keyCode == 13 || event.keyCode == 9) {
+                RegisterNext();
+            }
+        };
+    };
+
+    var mobile = "";
+    //判断内容
+    function InputNull() {
+        var v = $api.val($api.dom(".mobile"));
+        if (!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(v))) {
+            $api.css($api.dom(".register-bt"), 'opacity:0.5;');
+            nexttf = false;
+        } else if (v.length == 11) {
+            mobile = v;
+            $api.css($api.dom(".register-bt"), 'opacity:1;');
+            nexttf = true;
+        } else {
+            $api.css($api.dom(".register-bt"), 'opacity:0.5;');
+            nexttf = false;
+        }
+    }
+
+    function RegisterNext() {
+        if (nexttf) {
+            api.showProgress({
+                style: 'default',
+                animationType: 'fade',
+                title: '手机号验证中...',
+                modal: true
+            });
+            api.ajax({
+                url: ApiUrl.GetMobileRepeat + mobile,
+                method: 'get',
+            }, function (ret, err) {
+                if (ret) {
+                    if (ret.s == 1) {
+                        if (yzmtf) {
+                            OpenFramWin("register_yzm", "../../html/loginregister/register_yzm.html", "输入验证码", { "mobile": mobile }, "../../html/frame/frame3.html");
+                        } else {
+                            OpenFramWin("register_mm", "../../html/loginregister/register_mm.html", "设置密码", { "mobile": mobile }, "../../html/frame/frame3.html");
+                        };
+                    } else {
+                        api.toast({
+                            msg: ret.r,
+                            duration: 2000,
+                            location: 'middle'
+                        });
+                    };
+                };
+                api.hideProgress();
+            });
+        }
+    }
+
+    //邮箱注册
+    function OpenMailRegister() {
+        OpenFramWin("register_mail", "../../html/loginregister/register_mail.html", "邮箱注册", {}, "../../html/frame/frame3.html");
+    }
+
+    //用户名注册
+    function OpenNameRegister() {
+        OpenFramWin("register_name", "../../html/loginregister/register_name.html", "用户名注册", {}, "../../html/frame/frame3.html");
+    }
+</script>
+</html>

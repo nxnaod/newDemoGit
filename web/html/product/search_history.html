@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>搜索历史</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <link href="../../css/bootstrap.css" rel="stylesheet" />
+    <style>
+        body { color: #999999; }
+        .title { font-size: 16px; margin-top: 15px; }
+        ul li { margin-bottom:10px}
+        ul li span { display: block; /*height: 30px;*/ line-height: 30px; border: 1px solid #f0f0f0; border-radius: 30px; padding: 0 15px; font-size: 14px; color: #888888; }
+        .del { display: block; float: right; }
+        .del img { height: 21px; width: auto; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12">
+                <p class="title">
+                    搜索历史
+                    <span class="del" onclick="DelHistory()" tapmode="cb">
+                        <img src="../../image/product/del.png" />
+                    </span>
+                </p>
+            </div>
+            <div class="col-xs-12">
+                <ul class="list-inline">
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script src="../../script/config.js"></script>
+<script src="../../script/wsw.js"></script>
+<script type="text/javascript">
+    apiready = function () {
+        GetHistory();
+    };
+
+    function GetHistory() {
+        var sh = localStorage.getItem('SearchHistory');
+        if (sh) {
+            var shlist = sh.split('|');
+            var html = "";
+            for (var i in shlist) {
+                if (shlist[i] != "") {
+                    html += '<li onclick="SearchProduct(\'' + shlist[i] + '\')" tapmode="cb">\
+                                        <span>' + shlist[i] + '</span>\
+                                    </li>';
+                };
+            };
+            $api.html($api.dom("ul"), html);
+        } else
+        {
+            $api.html($api.dom("ul"), "");
+        };
+    };
+
+    function DelHistory() {
+        localStorage.removeItem('SearchHistory');
+        GetHistory();
+    };
+
+    function SearchProduct(title)
+    {
+        if (title != "")
+        {
+            api.openWin({
+                name: 'product_list_top',
+                url: '../../html/product/product_list_top.html',
+                bounces: false,
+                allowEdit: true,
+                reload: true,
+                rect: {
+                    x: 0,
+                    y: 0,
+                    w: 'auto',
+                    h: 'auto'
+                },
+                pageParam: { "searchVal": title },
+            });
+        }
+    }
+</script>
+</html>

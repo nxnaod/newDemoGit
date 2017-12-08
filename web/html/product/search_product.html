@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>产品搜索</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link href="../../css/bootstrap.css" rel="stylesheet" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        html, body { background-color: #fff; }
+        .top { height: 50px; border-bottom: 1px solid #dddddd; display: block; width: 100%; }
+        .search-return { display: block; width: 40px; height: 50px; text-align: center; line-height: 50px; position: absolute; }
+        .search-return img { height: 23px; width: auto; }
+
+        .my-input { width: 100%; display: block; height: 50px; line-height: 50px; text-align: center; padding-left: 40px; padding-right: 50px; }
+        .my-input img { height: 16px; width: auto; position: absolute; top: 17px; left: 45px; }
+        .my-input input { background: #F2F2F2; height: 35px; line-height: 35px; border-radius: 6px; width: 100%; padding-left: 30px; padding-right: 5px; }
+        .my-input input:focus { border: none; outline: 0; -webkit-box-shadow: none; box-shadow: none; }
+        .search-bt { display: block; width: 50px; height: 50px; text-align: center; line-height: 50px; position: absolute; top: 0; right: 0; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12" style="padding-left:0;padding-right:0">
+                    <span class="search-return" onclick="api.closeWin();" tapmode="cb">
+                        <img src="../../image/product/search_return.png" />
+                    </span>
+                    <div class="my-input">
+                        <img src="../../image/product/serch.png" />
+                        <input type="text" placeholder="搜淘宝宝贝   拿返利" class="search-val" />
+                    </div>
+                    <span class="search-bt" onclick="SearchProduct()" tapmode="cb">
+                        搜索
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script src="../../script/config.js"></script>
+<script src="../../script/wsw.js"></script>
+<script type="text/javascript">
+
+    var searchinput = $api.dom(".search-val");
+    apiready = function () {
+        OpenSearchHistory();
+
+        //监听键盘前进按钮
+        window.onkeydown = function (event) {
+            if (event.keyCode == 13 || event.keyCode == 9) {
+                SearchProduct();
+            }
+        };
+    };
+    function OpenSearchHistory() {
+        api.openFrame({
+            name: 'search_history',
+            url: '../../html/product/search_history.html',
+            rect: {
+                x: 0,
+                y: 51,
+                w: 'auto',
+                h: 'auto'
+            },
+        });
+    };
+    function SearchProduct() {
+        var val = $api.val(searchinput);
+        if (val != "") {
+            var sh = localStorage.getItem('SearchHistory') || "";
+            var shlist = sh.split('|');
+            var tf = 0;
+            for (var i in shlist) {
+                if (shlist[i] == val) {
+                    tf++;
+                };
+            };
+            if (tf <= 0) {
+                localStorage.setItem("SearchHistory", val + "|" + sh);
+                api.execScript({
+                    frameName: 'search_history',
+                    script: 'GetHistory()'
+                });
+            };
+            BrowseLog('0', val);
+            api.openWin({
+                name: 'product_list_top',
+                url: '../../html/product/product_list_top.html',
+                bounces: false,
+                allowEdit: true,
+                reload: true,
+                rect: {
+                    x: 0,
+                    y: 0,
+                    w: 'auto',
+                    h: 'auto'
+                },
+                pageParam: { "searchVal": val },
+            });
+        };
+    };
+</script>
+</html>

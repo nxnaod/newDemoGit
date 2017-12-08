@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>窗口样式-带返回</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.css" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        .frame-top { background-color: #fff; border-bottom: 1px solid #ddd; }
+        .frame-top .menu-name { color: #000; font-size: 18px; height: 50px; line-height: 50px; }
+        .frame-top .menu-name a { position: absolute; display: block; height: 50px; width: 50px; text-align: left; }
+        .cb { opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid frame-top" id="frame-top">
+        <div class="row">
+            <div class="col-xs-12 text-center menu-name">
+                <a onclick="api.closeWin();" tapmode="cb">
+                    <img src="../../image/return.png" style="height: 20px;margin-top: -5px;" />
+                </a>
+                <span id="title">类目导航</span>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    var _name1 = "";
+    var _url1 = "";
+    apiready = function () {
+        var header = $api.byId('frame-top');
+        $api.fixIos7Bar(header);
+        var bodyHeight = window.innerHeight;
+        var offset = $api.offset(header);
+        var left = offset.l;
+        var top = offset.t;
+        var width = offset.w;
+        var height = offset.h;
+        /* 根据当前模块分类动态改变标题. */
+        var frameParam = api["pageParam"];
+        var frameName = frameParam["frameName"];
+        var frameUrl = frameParam["frameUrl"];
+        var frameTitle = frameParam["frameTitle"];
+        var parentName = frameParam["parentName"] || "";
+        _name1 = frameTitle;
+        _url1 = frameUrl;
+        $api.text($api.dom("#title"), frameTitle);
+        api.openFrame({
+            name: frameName,
+            url: frameUrl,
+            pageParam: frameParam,
+            bounces: false,
+            progress: {
+                type: "page",
+                color: "#FE5F54"
+            },
+            rect: {
+                x: offset.l,
+                y: offset.t + offset.h,
+                w: offset.w,
+                h: api.winHeight - offset.h
+            }
+        });
+    };
+    function Share() {
+        var sharedModule = api.require('shareAction');
+        sharedModule.share({
+            text: _name1 + "\n" + _url1,
+            type: 'text',
+        });
+    }
+</script>
+</html>

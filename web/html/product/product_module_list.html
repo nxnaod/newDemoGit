@@ -1,0 +1,338 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>商品模块列表</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/product.css" />
+    <link href="../../css/public.css" rel="stylesheet" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        html, body { background-color: #ffffff; }
+        .cb { opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="banner">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid product-title">
+        <div class="row">
+            <div class="col-xs-12 text-center" style="line-height:34px;height:34px">
+                <img src="../../image/product/huo.png" style="height:15px;" />&nbsp;<span class="gxsj">每天早10点·晚8点上新</span>
+            </div>
+        </div>
+    </div>
+    <div class="product-list">
+        <div class="container-fluid">
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript" src="../../script/doT.min.js"></script>
+<script type="text/javascript" src="../../script/config.js"></script>
+<script type="text/javascript" src="../../script/wsw.js"></script>
+<script type="text/x-dot-template" id="plist2">
+    <div class="row style2">
+        {{ for(var i=0;i<it.length;i++){ }}
+        <div class="col-xs-6" onclick="OpenProductDetails('{{=it[i].lq_url}}','{{=it[i]._url}}','{{=it[i].laiyuan_type}}','{{=it[i].price_jian}}','{{=it[i].discount_price}}','{{=it[i].fanli_je}}','{{=it[i].data_id}}','{{=it[i].title}}','{{=it[i].laiyuan}}')" tapmode="cb">
+            <div class="product-list-item" tapmode="cb">
+                <div class="product-img">
+                    <img class="pro3-img" onload="LoadImage(this, '{{=it[i].img}}')" src="../../image/product/home_default.png" style="width: 100%!important;" />
+                </div>
+                {{ if(it[i].price_jian!=""&&it[i].price_jian!=0){ }}
+                <div class="youhuiquan">
+                    <span> 优惠券</span>
+                    <p>{{=it[i].price_jian}}</p>
+                </div>
+                {{ } }}
+                <h4 class="title">
+                    <span class="icon">{{=GetLaiYuan(it[i].laiyuan_type)}}</span>{{=it[i].title}}
+                </h4>
+                <div class="price">
+                    <div class="preferential-price">￥{{var price=0; if(parseFloat(it[i].discount_price) >=parseFloat(it[i].price_man)){price=(parseFloat(it[i].discount_price)-parseFloat(it[i].price_jian))}else{price=parseFloat(it[i].discount_price)} }}
+{{=parseFloat(price).toFixed(1)}}&nbsp;</div>
+                    <del class="cost-price">
+                        {{=it[i].price}}
+                    </del>
+                </div>
+                <div class="fl">
+                    <div class="flje">
+                        买后返:{{=(it[i].fanli_je/it[i].discount_price*100).toFixed(2)}}%
+                    </div>
+                    <div class="yq">已抢{{=it[i].sell}}</div>
+                </div>
+            </div>
+        </div>
+        {{ } }}
+    </div>
+</script>
+<script type="text/x-dot-template" id="plist1">
+    <div class="row style1">
+        {{ for(var i=0;i<it.length;i++){ }}
+        <div class="col-xs-12 " onclick="OpenProductDetails('{{=it[i].lq_url}}','{{=it[i]._url}}','{{=it[i].laiyuan_type}}','{{=it[i].price_jian}}','{{=it[i].discount_price}}','{{=it[i].fanli_je}}','{{=it[i].data_id}}','{{=it[i].title}}','{{=it[i].laiyuan}}')" tapmode="cb">
+            <div class="product-list-item">
+                <div class="media">
+                    <a class="media-left" href="javascript:;">
+                        <img onload="LoadImage(this, '{{=it[i].img}}')" src="../../image/product/home_default.png">
+                    </a>
+                    <div class="media-body">
+                        <h4 class="title">{{=it[i].title}}</h4>
+                        <div class="price">
+                            <div class="preferential-price">
+                                <small>￥</small>{{var price=0; if(parseFloat(it[i].discount_price) >=parseFloat(it[i].price_man)){price=(parseFloat(it[i].discount_price)-parseFloat(it[i].price_jian))}else{price=parseFloat(it[i].discount_price)} }}
+{{=parseFloat(price).toFixed(1)}}
+                            </div>
+                            <div class="cost-price">
+                                <div class="yj">
+                                    原价：{{=it[i].price}}
+                                </div>
+                                <div class="lqj">
+                                    买后返<strong style="color:#FF3444">{{=(it[i].fanli_je/it[i].discount_price*100).toFixed(2)}}</strong>%
+                                </div>
+                            </div>
+                        </div>
+                        <div class="fl">
+                            {{ if(it[i].price_jian!=""&&it[i].price_jian!=0){ }}
+                            <div class="yhq pull-left">
+                                <div class="a pull-left">优惠券</div>
+                                <div class="b pull-left">{{=it[i].price_jian}}元</div>
+                            </div>
+                            {{ } }}
+                            <div class="buybt">
+                                去{{=GetLaiYuan(it[i].laiyuan_type)}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{ } }}
+    </div>
+</script>
+<script type="text/javascript">
+    var plist = "";
+    var page = 0;
+    var pagemax = 1;
+    var baichuaninit = false;
+
+    var menuindex = 0;
+    var cid = 0;
+    var code = "";
+    apiready = function () {
+
+        //初始化百川
+        alibaichuan = api.require('alibaichuan');
+        initSDK();
+
+        var frameParam = api["pageParam"];
+        menuindex = frameParam["menuindex"];
+        cid = frameParam["cid"];
+        code = frameParam["code"];
+
+        $api.text($api.dom('.gxsj'),localStorage.getItem("appwsw_listTip"));
+
+        api.setRefreshHeaderInfo({
+            visible: true,
+            bgColor: '#F4F4F4',
+            textColor: '#A2A2A2',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            showTime: true
+        }, function (ret, err) {
+            plist = "";
+            page = 0;
+            OpenHome();
+            api.refreshHeaderLoadDone();
+        });
+
+        OpenHome();
+
+        //滑动检测
+        HDJC();
+
+        //滑动到底部刷新
+        api.addEventListener({
+            name: 'scrolltobottom',
+            extra: {
+                threshold: 0
+            }
+        }, function (ret, err) {
+            GetProductList();
+        });
+
+        //GetLog(api.frameName, api.winName);//输出日志
+    };
+
+    //初始化百川
+    function initSDK() {
+        var param = {
+            isvcode: "App"
+        };
+        alibaichuan.initTaeSDK(param, function (ret, err) {
+            if (ret) {
+                if (ret.code == 0) {
+                    baichuaninit = true;
+                }
+            };
+        });
+    };
+
+    function OpenHome() {
+        GetProductList();
+    };
+
+    function GetProductList() {
+        if (pagemax > page) {
+            api.showProgress({
+                style: 'default',
+                animationType: 'fade',
+                title: '数据加载中...',
+                modal: true
+            });
+            page++;
+            var _url = GetDataUrl() + '/appwsw/index.php?mod=goods&code=' + code + '&act=index&cid=' + cid + '&page=' + page;
+            api.ajax({
+                url: _url,
+                method: 'get',
+            }, function (ret, err) {
+                if (ret) {
+                    if (ret.s == 1) {
+                        pagemax = ret.r.total;
+                        if (ret.r.shuju_data != null) {
+                            if (ret.r.shuju_data.length > 0) {
+                                //主列表列表类型
+                                var PList;
+                                if (localStorage.getItem("appwsw_listlist") == 1) {
+                                    $api.css($api.dom("body"), "background-color: #F0F0F0;");
+                                    $api.css($api.dom(".product-title"), "background: #f0f0f0;");
+                                    PList = doT.template($api.text($api.dom("#plist2")));
+                                } else {
+                                    $api.css($api.dom("body"), "background: #ffffff;");
+                                    $api.css($api.dom(".product-title"), "background: #ffffff;");
+                                    PList = doT.template($api.text($api.dom("#plist1")));
+                                };
+                                plist += PList(ret.r.shuju_data);
+                                $api.html($api.dom('.product-list .container-fluid'), plist);
+                                var h = $api.cssVal($api.dom(".style2 .product-list-item"), "width");
+                                $(".style2 .product-list-item .pro3-img").css("height", h);
+                                api.parseTapmode();
+                            };
+                        };
+                    };
+                    api.hideProgress();
+                };
+            });
+        } else {
+            api.hideProgress();
+            api.toast({
+                msg: '已经到底了~',
+                duration: 5000,
+                location: 'middle'
+            });
+        };
+    };
+
+    //滑动检测
+    function HDJC() {
+
+        //左滑动
+        api.addEventListener({
+            name: 'swipeleft'
+        }, function (ret, err) {
+            api.execScript({
+                name: 'frameWin_' + code,
+                script: 'TypeMenuChange(' + (menuindex + 1) + ');',
+            });
+        });
+
+        //右滑动
+        api.addEventListener({
+            name: 'swiperight'
+        }, function (ret, err) {
+            api.execScript({
+                name: 'frameWin_' + code,
+                script: 'TypeMenuChange(' + (menuindex - 1) + ');',
+            });
+        });
+    }
+
+    //打开商品
+    ///_url：优惠券链接，_goto：购买链接，laiyuan_type：来源类型，
+    //price_jian：优惠金额，discount_price：实际价格，fanli_je：返利金额
+    //laiyuan_type=1是淘宝，laiyuan_type=2是天猫，laiyuan_type=3是京东等第三方，laiyuan_type=4是拍拍
+    function OpenProductDetails(_url, _goto_url, laiyuan_type, price_jian, discount_price, fanli_je, pro_id, title, laiyuan_name) {
+        //alert("_url=" + _url + "_goto_url=" + _goto_url + "laiyuan_type=" + laiyuan_type + "price_jian=" + price_jian + "discount_price=" + discount_price + "fanli_je=" + fanli_je);
+        var url = "";
+        BrowseLog(pro_id, title);
+        if (laiyuan_type == 1 || laiyuan_type == 2) {
+            if (_url != "" && _url != "null" && _url != null && price_jian != 0) {
+                url = _url;
+                var param = {
+                    url: url,
+                    mmpid: GetMMID(),
+                    nativeview: false
+                };
+                if (baichuaninit) {
+                    alibaichuan.showDetailByURL(param, function (ret, err) {
+                        if (ret) {
+                            if (ret.code == 999) {
+                                api.ajax({
+                                    url: GetDataUrl() + '/appwsw/index.php?mod=user&act=tbnick&sub=add&value=' + ret.ordercode,
+                                    method: 'get',
+                                }, function (ret, err) { })
+                            }
+                        }
+                    });
+                } else {
+                    api.toast({
+                        msg: '阿里百川初始化失败',
+                        duration: 2000,
+                        location: 'middle'
+                    });
+                };
+            } else {
+                url = _goto_url;
+                OpenWin('no_discount', '../../html/product/no_discount.html', { "url": url, "laiyuan_type": laiyuan_type, "price_jian": price_jian, "discount_price": discount_price, "fanli_je": fanli_je, "pro_id": pro_id, "win_name": api.winName, "fram_name": api.frameName, "laiyuan_name": laiyuan_name }, 'movein', 'from_bottom');
+            };
+        } else {
+            url = _goto_url;
+            OpenWin('no_discount', '../../html/product/no_discount.html', { "url": url, "laiyuan_type": laiyuan_type, "price_jian": price_jian, "discount_price": discount_price, "fanli_je": fanli_je, "pro_id": pro_id, "win_name": api.winName, "fram_name": api.frameName, "laiyuan_name": laiyuan_name }, 'movein', 'from_bottom');
+        }
+    };
+
+    //打开无优惠券
+    function OpenNoProductDetails(laiyuan_type, url, laiyuan_name, pro_id) {
+        var param = {
+            isvcode: "app",
+            itemid: pro_id,
+            mmpid: GetMMID(),
+            nativeview: false
+        };
+        if ((laiyuan_type == 1 || laiyuan_type == 2) && baichuaninit) {
+            alibaichuan.showTaokeItemById(param, function (ret, err) {
+                if (ret) {
+                    if (ret.code == 999) {
+                        api.ajax({
+                            url: GetDataUrl() + '/appwsw/index.php?mod=user&act=tbnick&sub=add&value=' + ret.ordercode,
+                            method: 'get',
+                        }, function (ret, err) { })
+                    }
+                };
+            });
+        } else {
+            OpenFramWin("ProductDetails", url, laiyuan_name, {});
+        };
+    };
+</script>
+</html>

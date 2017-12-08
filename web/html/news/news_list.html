@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>新闻列表</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link href="../../css/bootstrap.css" rel="stylesheet" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        body { }
+        .cb { opacity: 0.8; }
+        .nolist { display: block; width: 100%; text-align: center; color: #999; font-size: 10px; margin-top: 20px; }
+        .nolist img { height: 100px; width: auto; }
+        .item-list { margin-top: 10px; border-top: 1px solid #ddd; }
+        .item-list li { height: 45px; line-height: 45px; border-bottom: 1px solid #ddd; }
+        .item-list li .pull-right img { height: 15px; width: auto; }
+        .item-list li .title { display: block; width: 100%; height: 45px; line-height: 45px; overflow: hidden; margin-right: -10px; padding-right: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12 content">
+                <ul class="list-unstyled  item-list"></ul>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script src="../../script/wsw.js"></script>
+<script src="../../script/config.js"></script>
+<script src="../../script/doT.min.js"></script>
+<script type="text/x-dot-template" id="itemlist">
+    {{ for(var i=0;i<it.length&&i<4;i++){ }}
+    <li onclick="OpenNewDetails('{{=it[i].id}}', '{{=it[i].title}}')" tapmode="cb">
+        <span class="title pull-left">
+            {{=it[i].title}}
+        </span>
+        <span class="pull-right">
+            <img src="../../image/user/wd_tag_arrow_hui.png" />
+        </span>
+    </li>
+    {{ } }}
+</script>
+<script type="text/javascript">
+    var newID;
+    apiready = function () {
+        var frameParam = api["pageParam"];
+        newID = frameParam["newID"];
+        api.setRefreshHeaderInfo({
+            visible: true,
+            bgColor: '#F4F4F4',
+            textColor: '#A2A2A2',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            showTime: true
+        }, function (ret, err) {
+            if (newID != "" && newID != "undefined" && newID != undefined) {
+                GetContent(newID)
+            } else {
+                api.toast({
+                    msg: '数据加载失败',
+                    duration: 5000,
+                    location: 'middle'
+                });
+                api.closeWin();
+            };
+            api.refreshHeaderLoadDone();
+        });
+        if (newID != "" && newID != "undefined" && newID != undefined) {
+            GetContent(newID)
+        } else {
+            api.toast({
+                msg: '数据加载失败',
+                duration: 5000,
+                location: 'middle'
+            });
+            api.closeWin();
+        };
+    };
+
+    function GetContent(newID) {
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '数据请求中...',
+            modal: true
+        });
+        api.ajax({
+            url: GetDataUrl() + "/appwsw/index.php?mod=article&act=list&cid=" + newID,
+            method: 'get',
+        }, function (ret, err) {
+            var nohtml = '<div class="nolist">\
+                                    <img src="../../image/user/nolist.png" />\
+                                    <p>列表为空~</p>\
+                                </div>';
+            if (ret) {
+                if (ret.s == 1) {
+                    if (ret.r.length > 0) {
+                        var ItemList = doT.template($api.text($api.dom("#itemlist")));
+                        var ilist = ItemList(ret.r);
+                        $api.html($api.dom('.item-list'), ilist);
+                        api.parseTapmode();
+                    } else {
+                        $api.html($api.dom('.content'), nohtml);
+                    }
+
+                } else {
+                    api.toast({
+                        msg: '数据加载失败',
+                        duration: 5000,
+                        location: 'middle'
+                    });
+                    api.closeWin();
+                }
+            };
+            api.hideProgress();
+        })
+    };
+
+    //打开详情
+    function OpenNewDetails(id, title) {
+        OpenFramWin("NewDetails" + id, "../../html/news/news_content.html", title, { "newID": id }, "../../html/frame/frame3.html");
+    }
+</script>
+</html>

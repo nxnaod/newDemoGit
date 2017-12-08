@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>分销</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link href="../../css/bootstrap.css" rel="stylesheet" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        html, body { background-color: #fff; }
+        .top { display: block; width: 100%; height: 50px; background: #ffffff; color: #000000; font-size: 18px; line-height: 50px; }
+        .user-infor { display: block; width: 100%; height: 60px; background-color: #EBEBEB; }
+        .user-infor .user-icon { display: block; width: 100px; height: 100%; text-align: left; line-height: 60px; float: left; }
+        .user-infor .user-icon img { width: 45px; height: 45px; border-radius: 50%; }
+        .user-infor .mx { display: block; width: 200px; height: 100%; text-align: right; line-height: 60px; float: right; }
+
+        .ljsy { display: block; width: 100%; height: 150px; background: url('../../image/user/wd_bg.png'); background-size: 100% 100%; color: #ffffff; }
+
+        .menu-list .col-xs-4 { border-bottom: 1px solid #EBEBEB; border-right: 1px solid #EBEBEB; }
+        .menu-list .col-xs-4 img { width: 50%; padding-top: 15px; }
+        .menu-list .col-xs-4 .name { padding-top: 5px; font-size: 14px; margin-bottom: 5px; height: 25px; line-height: 25px; overflow: hidden; }
+        .menu-list .col-xs-4 .content { font-size: 10px; height: 17px; line-height: 17px; margin-bottom: 15px; overflow: hidden; color: #808080; }
+
+        .cb { opacity: 0.8; }
+    </style>
+</head>
+<body>
+    <div class="top" id="top">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12 text-center">
+                    分销商中心
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script src="../../script/config.js"></script>
+<script src="../../script/wsw.js"></script>
+<script type="text/javascript">
+    apiready = function () {
+        api.execScript({
+            name: 'root',
+            script: 'tfd(true);',
+        });
+        OpenDistributionContent();
+        //GetLog(api.frameName, api.winName);//输出日志
+    };
+
+    function OpenDistributionContent() {
+
+        //获取底部高度
+        var top = $api.byId('top');
+        var topPos = $api.offset(top);
+
+        api.openFrame({
+            name: 'distribution_content',
+            url: '../../html/distribution/distribution_content.html',
+            hScrollBarEnabled: false,
+            vScrollBarEnabled:false,
+            rect: {
+                x: 0,
+                y: topPos.h,
+                w: 'auto',
+                h: api.frameHeight - topPos.h
+            },
+            progress: {
+                type: "page",
+                color: "#FE5F54"
+            },
+            reload:false,
+            pageParam: {}
+        });
+    }
+</script>
+</html>

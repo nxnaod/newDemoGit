@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>新闻内容</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link href="../../css/bootstrap.css" rel="stylesheet" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        html, body { background: #fff; width: 100%; }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12 content">
+
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script src="../../script/config.js"></script>
+<script type="text/javascript">
+
+    var newID;
+    apiready = function () {
+        var frameParam = api["pageParam"];
+        newID = frameParam["newID"];
+        api.setRefreshHeaderInfo({
+            visible: true,
+            bgColor: '#F4F4F4',
+            textColor: '#A2A2A2',
+            textDown: '下拉刷新...',
+            textUp: '松开刷新...',
+            showTime: true
+        }, function (ret, err) {
+            if (newID != "" && newID != "undefined" && newID != undefined) {
+                GetContent(newID)
+            } else {
+                api.toast({
+                    msg: '数据加载失败',
+                    duration: 5000,
+                    location: 'middle'
+                });
+            };
+            api.refreshHeaderLoadDone();
+        });
+        if (newID != "" && newID != "undefined" && newID != undefined) {
+            GetContent(newID)
+        } else {
+            api.toast({
+                msg: '数据加载失败',
+                duration: 5000,
+                location: 'middle'
+            });
+        };
+    };
+
+    function GetContent(newID) {
+        api.showProgress({
+            style: 'default',
+            animationType: 'fade',
+            title: '数据请求中...',
+            modal: true
+        });
+        api.ajax({
+            url: GetDataUrl() + "/appwsw/index.php?mod=article&act=view&id=" + newID,
+            method: 'get',
+        }, function (ret, err) {
+            if (ret) {
+                if (ret.s == 1) {
+                    $api.html($api.dom(".content"), ret.r.content);
+                };
+            } else {
+                api.toast({
+                    msg: err.msg,
+                    duration: 5000,
+                    location: 'middle'
+                });
+            }
+            api.hideProgress();
+        });
+    }
+</script>
+</html>

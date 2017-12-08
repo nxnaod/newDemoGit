@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>收支明细</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link href="../../css/bootstrap.css" rel="stylesheet" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        body { }
+        .top { height: 40px; line-height:38px; font-size: 14px; color: #7d7d7d;border-bottom:1px solid #DDDDDD;   }
+        .top .col-xs-6 { }
+        .top .active { color: #FF3444; border-bottom: 2px solid #FF3444; }
+    </style>
+</head>
+<body>
+    <div class="top">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-6 text-center active shou" onclick="ShouList(0)" tapmode="cb">
+                    收入明细
+                </div>
+                <div class="col-xs-6 text-center zhi" onclick="ZhiList(1)" tapmode="cb">
+                    提现历史
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script type="text/javascript">
+    apiready = function () {
+        OpenFrameGroup();
+    };
+
+    function OpenFrameGroup() {
+        api.openFrameGroup({
+            name: 'shouzhi',
+            rect: {
+                x: 0,
+                y: 92,
+                w: 'auto',
+                h: api.frameHeight - 40
+            },
+            index: 0,
+            preload: 0,
+            scrollEnabled:false,
+            frames: [{
+                name: 'shou_list',
+                url: '../../html/user/shou_list.html',
+                bgColor: '#F1EFF2'
+            }, {
+                name: 'zhi_list',
+                url: '../../html/user/zhi_list.html',
+                bgColor: '#F1EFF2'
+            }]
+        }, function (ret, err) {
+        });
+    };
+
+    var shou = $api.dom(".top .shou");
+    var zhi = $api.dom(".top .zhi");
+    //收入明细
+    function ShouList(index) {
+        $api.addCls(shou, "active");
+        $api.removeCls(zhi, "active");
+        SetGroupIndex(index);
+    }
+    //指出明细
+    function ZhiList(index) {
+        $api.addCls(zhi, "active");
+        $api.removeCls(shou, "active");
+        SetGroupIndex(index);
+    }
+
+    function SetGroupIndex(index) {
+        api.setFrameGroupIndex({
+            name: 'shouzhi',
+            index: index,
+            reload:true,
+        });
+    };
+</script>
+</html>

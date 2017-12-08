@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0" />
+    <meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+    <title>个人财务设置</title>
+    <link rel="stylesheet" type="text/css" href="../../css/api.css" />
+    <link href="../../css/bootstrap.css" rel="stylesheet" />
+    <link href="../../css/font.css" rel="stylesheet" />
+    <style>
+        body { }
+        .my-form { margin-top: 15px; }
+        label { font-weight: 500; }
+        label small { color: #9C9C9C; }
+        .form-control { border-radius: 0; height: 38px; line-height: 38px; padding: 0 12px; }
+        .submit-bt { opacity: 0.5; width: 100%; height: 45px; display: block; line-height: 45px; color: #ffffff; background: #FF3C4C; font-size: 16px; border-radius: 5px; margin-top: 10px; }
+        .form-group { margin-bottom: 10px; }
+        .alert { margin-bottom: 10px; border-radius: 0px; padding: 8px 15px; }
+    </style>
+</head>
+<body>
+    <div class="my-form">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="alert alert-warning info">
+                        请谨慎填写，提交后无法修改！！
+                    </div>
+                    <div class="form-group">
+                        <label for="realname">真实姓名：<small style="color:#FF3C4C">填写后不可更改</small></label>
+                        <input type="text" class="form-control" id="realname" placeholder="真实姓名" oninput="Empty()">
+                    </div>
+                    <div class="form-group">
+                        <label for="alipay">支付宝账号：<small style="color:#FF3C4C">填写后不可更改</small></label>
+                        <input type="text" class="form-control" id="alipay" placeholder="支付宝账号" oninput="Empty()">
+                    </div>
+                </div>
+                <div class="col-xs-12 text-center">
+                    <div class="input-box">
+                        <span class="submit-bt" onclick="Submit()" tapmode="cb">保存信息</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../script/jquery-1.11.1.js"></script>
+<script type="text/javascript" src="../../script/api.js"></script>
+<script src="../../script/config.js"></script>
+<script src="../../script/wsw.js"></script>
+<script type="text/javascript">
+    apiready = function () {
+
+    };
+
+    var empty = false;
+    var submitbt = $api.dom(".submit-bt");
+    //判断金额
+    function Empty() {
+        var alipayv = $api.val(alipay);
+        var realnamev = $api.val(realname);
+        if (alipayv != "" && alipayv != undefined && alipayv != "undefined" && realnamev != "" && realnamev != undefined && realnamev != "undefined") {
+            empty = true;
+            $api.css(submitbt, 'opacity:1;');
+        } else {
+            empty = false;
+            $api.css(submitbt, 'opacity:0.5;');
+        }
+    };
+
+    var alipay = $api.dom("#alipay");
+    var realname = $api.dom("#realname");
+    //提交
+    function Submit() {
+        if (empty) {
+            var alipayv = $api.val(alipay);
+            var realnamev = $api.val(realname);
+            api.showProgress({
+                style: 'default',
+                animationType: 'fade',
+                title: '申请提交中...',
+                modal: true
+            });
+            api.ajax({
+                url: GetDataUrl() + '/appwsw/index.php?mod=user&act=set&realname=' + realnamev + '&alipay=' + alipayv,
+                method: 'get',
+            }, function (ret, err) {
+                if (ret) {
+                    if (ret.s == 1) {
+                        api.alert({
+                            title: '提示',
+                            msg: ret.r,
+                        }, function (ret, err) {
+                            OpenFramWin("tixian", "../../html/user/tixian.html", "申请提现", {}, "../../html/frame/frame3.html");
+                        });
+                    } else {
+                        api.toast({
+                            msg: ret.r,
+                            duration: 2000,
+                            location: 'middle'
+                        });
+                    }
+                } else {
+                    api.toast({
+                        msg: JSON.stringify(err),
+                        duration: 2000,
+                        location: 'middle'
+                    });
+                }
+                api.hideProgress();
+            });
+        }
+    }
+</script>
+</html>
